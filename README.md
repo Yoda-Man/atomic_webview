@@ -17,7 +17,7 @@ Atomic Webview is cross platform webview for android, ios, linux, macos, web, wi
 
 ```dart
 import 'package:flutter/material.dart';
-import "package:webview_universal/webview_universal.dart";
+import "package:atomic_webview/atomic_webview.dart";
 
 void main(List<String> args) {
   runApp(const MaterialApp(
