@@ -1,24 +1,9 @@
-# Atomic Webview
-
-Atomic Webview is cross platform webview for android, ios, linux, macos, web, windows
-on Ubuntu run the command "sudo apt install libwebkit2gtk-4.0-dev"
-
-
-## Tested On 
- 
-| OS      | Tested     |
-|---------|------------|
-| Android | Tested     |
-| Linux   | Tested     |
-| Windows | Tested     |
-| ios     | Not Tested |
-| Web     | Tested     |
-| macOS   | Not Tested |
-
+# Example of usage `atomic_webview`
 
 ```dart
+
 import 'package:flutter/material.dart';
-import "package:atomic_webview/atomic_webview.dart";
+import 'package:atomic_webview/atomic_webview.dart';
 
 void main(List<String> args) {
   runApp(const MaterialApp(
@@ -39,12 +24,9 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    task();
-  }
-
-  Future<void> task() async {
-    await webViewController.init(
+    webViewController.init(
       context: context,
+      setState: setState,
       uri: Uri.parse("https://flutter.dev"),
     );
   }
@@ -52,11 +34,18 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: FloatingActionButton(
+          onPressed: () {
+            webViewController.goBackSync();
+          },
+          child: Icon(Icons.abc),
+        ),
+      ),
       body: WebView(
         controller: webViewController,
       ),
     );
   }
 }
-
 ```
