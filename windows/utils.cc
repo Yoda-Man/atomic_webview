@@ -1,7 +1,3 @@
-//
-// Created by yangbin on 2021/11/11.
-//
-
 #include <windows.h>
 
 #include "utils.h"

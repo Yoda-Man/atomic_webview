@@ -1,7 +1,3 @@
-//
-// Created by yangbin on 2021/11/12.
-//
-
 #ifndef WEBVIEW_WINDOW_WINDOWS_FLUTTER_VIEW_H_
 #define WEBVIEW_WINDOW_WINDOWS_FLUTTER_VIEW_H_
 

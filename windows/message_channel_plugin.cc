@@ -1,7 +1,3 @@
-//
-// Created by yangbin on 2021/11/15.
-//
-
 #include <flutter/plugin_registrar.h>
 #include <flutter/plugin_registrar_windows.h>
 #include <flutter/method_channel.h>

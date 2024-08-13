@@ -1,9 +1,5 @@
-//
-// Created by yangbin on 2021/11/11.
-//
-
-#ifndef webview_universal_WINDOWS_UTILS_H_
-#define webview_universal_WINDOWS_UTILS_H_
+#ifndef atomic_webview_WINDOWS_UTILS_H_
+#define atomic_webview_WINDOWS_UTILS_H_
 
 #include <windows.h>
 #include "wil/wrl.h"
@@ -39,4 +35,4 @@ void UnregisterWindowClass(LPCWSTR class_name);
 
 }  // namespace webview_window
 
-#endif //webview_universal_WINDOWS_UTILS_H_
+#endif //atomic_webview_WINDOWS_UTILS_H_

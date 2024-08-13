@@ -1,7 +1,3 @@
-//
-// Created by yangbin on 2021/11/12.
-//
-
 #include <windows.h>
 #include <tchar.h>
 #include <cassert>
