@@ -1,3 +1,6 @@
+## 0.0.4
+* update notes
+
 ## 0.0.3
 
 * Add Notes For Ubuntu

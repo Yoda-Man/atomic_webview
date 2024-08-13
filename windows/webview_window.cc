@@ -12,7 +12,7 @@
 #include "strconv.h"
 #include "utils.h"
 
-#include "include/webview_universal/webview_universal_plugin.h"
+#include "include/atomic_webview/atomic_webview_plugin.h"
 
 namespace {
 

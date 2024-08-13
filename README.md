@@ -1,20 +1,14 @@
 # Atomic Webview
 
 Atomic Webview is cross platform webview for android, ios, linux, macos, web, windows
+
+## Ubuntu
 on Ubuntu run the command "sudo apt install libwebkit2gtk-4.0-dev"
 
 
 ## Tested On 
  
-| OS      | Tested     |
-|---------|------------|
-| Android | Tested     |
-| Linux   | Tested     |
-| Windows | Tested     |
-| ios     | Not Tested |
-| Web     | Tested     |
-| macOS   | Not Tested |
-
+early stages of development.
 
 ```dart
 import 'package:flutter/material.dart';

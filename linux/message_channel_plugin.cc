@@ -1,8 +1,3 @@
-//
-// Created by boyan on 11/23/21.
-//
-
-
 #include "message_channel_plugin.h"
 
 #include <set>

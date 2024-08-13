@@ -225,7 +225,7 @@ static void method_call_cb(FlMethodChannel *channel, FlMethodCall *method_call,
   webview_window_plugin_handle_method_call(plugin, method_call);
 }
 
-void webview_universal_plugin_register_with_registrar(FlPluginRegistrar *registrar) {
+void atomic_webview_plugin_register_with_registrar(FlPluginRegistrar *registrar) {
   client_message_channel_plugin_register_with_registrar(registrar);
 
   WebviewWindowPlugin *plugin = WEBVIEW_WINDOW_PLUGIN(
