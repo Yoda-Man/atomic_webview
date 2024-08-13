@@ -1,0 +1,8 @@
+#ifndef atomic_webview_LINUX_MESSAGE_CHANNEL_PLUGIN_H_
+#define atomic_webview_LINUX_MESSAGE_CHANNEL_PLUGIN_H_
+
+#include <flutter_linux/flutter_linux.h>
+
+void client_message_channel_plugin_register_with_registrar(FlPluginRegistrar *registrar);
+
+#endif //atomic_webview_LINUX_MESSAGE_CHANNEL_PLUGIN_H_
