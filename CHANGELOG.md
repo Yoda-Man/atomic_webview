@@ -1,3 +1,6 @@
+## 0.0.6
+* linux webkit2 version find compatibiltiy
+
 ## 0.0.5
 * update dependencies
 
