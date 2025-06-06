@@ -1,6 +1,6 @@
 name: atomic_webview
 description: "Atomic Webview is cross platform webview for android, ios, linux, macos, web, windows"
-version: 0.0.6
+version: 0.0.7
 homepage: https://github.com/Yoda-Man/atomic_webview
 
 platforms:
@@ -20,15 +20,15 @@ dependencies:
     sdk: flutter
   path: ^1.9.1
   universal_io: ^2.2.0
-  webview_flutter: ^4.10.0
-  webview_flutter_android: ^4.3.2
+  webview_flutter: ^4.13.0
+  webview_flutter_android: ^4.7.0
   webview_flutter_web: ^0.2.3+4
-  webview_flutter_wkwebview: ^3.18.3    
+  webview_flutter_wkwebview: ^3.22.0    
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

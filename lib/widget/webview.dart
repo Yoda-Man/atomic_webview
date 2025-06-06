@@ -17,7 +17,7 @@ class WebView extends StatelessWidget {
     if (!controller.is_init) {
       return const SizedBox.shrink();
     }
-    if (Platform.isAndroid || Platform.isIOS || kIsWeb) {
+    if (Platform.isWindows || Platform.isAndroid || Platform.isIOS || kIsWeb) {
       return Visibility(
         visible: controller.is_init,
         replacement: const SizedBox.shrink(),

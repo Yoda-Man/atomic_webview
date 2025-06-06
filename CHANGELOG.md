@@ -1,3 +1,6 @@
+## 0.0.7
+* update dependencies add support for windows
+
 ## 0.0.6
 * linux webkit2 version find compatibiltiy
 
