@@ -59,15 +59,11 @@ class WebviewWindow {
     return true;
   }
 
-  static Future<Webview> create({
-    CreateConfiguration? configuration,
-  }) async {
+  static Future<Webview> create({CreateConfiguration? configuration}) async {
     configuration ??= CreateConfiguration.platform();
     _init();
-    final viewId = await _channel.invokeMethod(
-      "create",
-      configuration.toMap(),
-    ) as int;
+    final viewId =
+        await _channel.invokeMethod("create", configuration.toMap()) as int;
     final webview = WebviewImpl(viewId, _channel);
     _webviews.add(webview);
     return webview;
@@ -75,9 +71,10 @@ class WebviewWindow {
 
   static Future<dynamic> _handleOtherIsolateMethodCall(MethodCall call) async {
     final webViewId = call.arguments['webViewId'] as int;
-    final webView = _webviews
-        .cast<WebviewImpl?>()
-        .firstWhere((w) => w?.viewId == webViewId, orElse: () => null);
+    final webView = _webviews.cast<WebviewImpl?>().firstWhere(
+      (w) => w?.viewId == webViewId,
+      orElse: () => null,
+    );
     if (webView == null) {
       return;
     }
@@ -103,9 +100,10 @@ class WebviewWindow {
   static Future<dynamic> _handleMethodCall(MethodCall call) async {
     final args = call.arguments as Map;
     final viewId = args['id'] as int;
-    final webview = _webviews
-        .cast<WebviewImpl?>()
-        .firstWhere((e) => e?.viewId == viewId, orElse: () => null);
+    final webview = _webviews.cast<WebviewImpl?>().firstWhere(
+      (e) => e?.viewId == viewId,
+      orElse: () => null,
+    );
     assert(webview != null);
     if (webview == null) {
       return;
@@ -155,10 +153,10 @@ class WebviewWindow {
         break;
       case "onNavigationCompleted":
         webview.onNavigationCompleted();
-        await _otherIsolateMessageHandler
-            .invokeMethod('onNavigationCompleted', {
-          'webViewId': viewId,
-        });
+        await _otherIsolateMessageHandler.invokeMethod(
+          'onNavigationCompleted',
+          {'webViewId': viewId},
+        );
         break;
       default:
         return;
@@ -171,15 +169,14 @@ class WebviewWindow {
   }) async {
     await _channel.invokeMethod('clearAll');
 
-    // FIXME(boyan01) Move the logic to windows platform if WebView2 provider a way to clean caches.
-    // https://docs.microsoft.com/en-us/microsoft-edge/webview2/concepts/user-data-folder#create-user-data-folders
     if (Platform.isWindows) {
       final Directory webview2Dir;
       if (p.isAbsolute(userDataFolderWindows)) {
         webview2Dir = Directory(userDataFolderWindows);
       } else {
-        webview2Dir = Directory(p.join(
-            p.dirname(Platform.resolvedExecutable), userDataFolderWindows));
+        webview2Dir = Directory(
+          p.join(p.dirname(Platform.resolvedExecutable), userDataFolderWindows),
+        );
       }
 
       if (await (webview2Dir.exists())) {
