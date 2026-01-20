@@ -10,7 +10,9 @@ class WebviewWindow {
     return false;
   }
 
-  static Future<Webview> create({required configuration}) async {
+  static Future<Webview> create({
+    required CreateConfiguration configuration,
+  }) async {
     return Webview();
   }
 }
