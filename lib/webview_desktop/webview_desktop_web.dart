@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Webview {
-  setBrightness(Brightness brightness) {}
-  launch(String url) {}
+  void setBrightness(Brightness brightness) {}
+  void launch(String url) {}
 }
 
 class WebviewWindow {
@@ -10,14 +10,14 @@ class WebviewWindow {
     return false;
   }
 
-  static Future<Webview> create({required configuration}) async {
+  static Future<Webview> create({
+    required CreateConfiguration configuration,
+  }) async {
     return Webview();
   }
 }
 
 class CreateConfiguration {
   final double titleBarTopPadding;
-  CreateConfiguration({
-    required this.titleBarTopPadding,
-  });
+  CreateConfiguration({required this.titleBarTopPadding});
 }
