@@ -1,3 +1,5 @@
+## 0.0.9
+* fix linux build
 ## 0.0.8
 * Update dependencies to latest versions
 * Fix Windows support configuration
