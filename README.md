@@ -25,7 +25,7 @@ Add `atomic_webview` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  atomic_webview: ^0.0.8
+  atomic_webview: ^0.0.9
 ```
 
 ## Requirements
