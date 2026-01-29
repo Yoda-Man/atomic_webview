@@ -1,6 +1,6 @@
 name: atomic_webview
-description: "Atomic Webview is cross platform webview for android, ios, linux, macos, web, windows"
-version: 0.0.9
+version: 0.1.0
+description: "A cross-platform WebView for Android, iOS, macOS, Linux, Windows, and Web, with unified controller support."
 homepage: https://github.com/Yoda-Man/atomic_webview
 
 platforms:

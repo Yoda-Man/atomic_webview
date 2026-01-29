@@ -5,8 +5,9 @@ A powerful, cross-platform WebView for Flutter that seamlessly supports Android,
 ## Features
 
 *   **Truly Cross-Platform**: Write once, run everywhere. Consistent WebView experience across all 6 supported platforms.
-*   **Easy Integration**: Simple, intuitive API for embedding web content.
+*   **Unified Controller**: Control navigations, evaluate JavaScript, and load assets using a single `WebViewController`.
 *   **Native Performance**: Leverages underlying native web technologies (WebKit, WebView2, etc.) for optimal performance.
+*   **Asset Loading**: Easily load local Flutter assets across all platforms.
 
 ## Platform Support
 
@@ -25,7 +26,7 @@ Add `atomic_webview` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  atomic_webview: ^0.0.9
+  atomic_webview: ^0.1.0
 ```
 
 ## Requirements
@@ -35,7 +36,7 @@ dependencies:
 To run on Linux, you must install the WebKit2GTK development library:
 
 ```bash
-sudo apt install libwebkit2gtk-4.0-dev
+sudo apt install libwebkit2gtk-4.0-dev # Or libwebkit2gtk-4.1-dev
 ```
 
 ## Usage Example
@@ -68,6 +69,7 @@ class _WebViewExampleAppState extends State<WebViewExampleApp> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _webViewController.init(
         context: context,
+        setState: setState, // Required to update the UI after initialization
         uri: Uri.parse("https://flutter.dev"),
       );
     });
@@ -78,6 +80,12 @@ class _WebViewExampleAppState extends State<WebViewExampleApp> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Atomic Webview Example'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => _webViewController.reload(),
+          ),
+        ],
       ),
       body: WebView(
         controller: _webViewController,
@@ -85,6 +93,19 @@ class _WebViewExampleAppState extends State<WebViewExampleApp> {
     );
   }
 }
+```
+
+## Advanced Usage
+
+### Loading Local Assets
+```dart
+await _webViewController.loadAsset('assets/index.html');
+```
+
+### Evaluating JavaScript
+```dart
+String? result = await _webViewController.evaluateJavaScript('document.title');
+print('Page Title: $result');
 ```
 
 For more details, check the `example` folder.

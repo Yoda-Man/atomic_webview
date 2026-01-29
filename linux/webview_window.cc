@@ -212,20 +212,43 @@ gboolean WebviewWindow::DecidePolicy(WebKitPolicyDecision *decision, WebKitPolic
 }
 
 void WebviewWindow::EvaluateJavaScript(const char *java_script, FlMethodCall *call) {
+#if WEBKIT_CHECK_VERSION(2, 40, 0)
   webkit_web_view_evaluate_javascript(
       WEBKIT_WEB_VIEW(webview_), java_script, -1, nullptr, nullptr, nullptr,
       [](GObject *object, GAsyncResult *result, gpointer user_data) {
         auto *call = static_cast<FlMethodCall *>(user_data);
         GError *error = nullptr;
-        auto *js_result = webkit_web_view_evaluate_javascript_finish(WEBKIT_WEB_VIEW(object), result, &error);
-        if (!js_result) {
+        JSCValue *js_value_obj = webkit_web_view_evaluate_javascript_finish(WEBKIT_WEB_VIEW(object), result, &error);
+        if (!js_value_obj) {
           fl_method_call_respond_error(call, "failed to evaluate javascript.", error->message, nullptr, nullptr);
           g_error_free(error);
         } else {
-          auto *js_value = jsc_value_to_json(webkit_javascript_result_get_js_value(js_result), 0);
-          fl_method_call_respond_success(call, js_value ? fl_value_new_string(js_value) : nullptr, nullptr);
+          auto *js_value_json = jsc_value_to_json(js_value_obj, 0);
+          fl_method_call_respond_success(call, js_value_json ? fl_value_new_string(js_value_json) : nullptr, nullptr);
+          g_free(js_value_json);
         }
         g_object_unref(call);
       },
       g_object_ref(call));
+#else
+  webkit_web_view_run_javascript(
+      WEBKIT_WEB_VIEW(webview_), java_script, nullptr,
+      [](GObject *object, GAsyncResult *result, gpointer user_data) {
+        auto *call = static_cast<FlMethodCall *>(user_data);
+        GError *error = nullptr;
+        WebKitJavascriptResult *js_result = webkit_web_view_run_javascript_finish(WEBKIT_WEB_VIEW(object), result, &error);
+        if (!js_result) {
+          fl_method_call_respond_error(call, "failed to evaluate javascript.", error->message, nullptr, nullptr);
+          g_error_free(error);
+        } else {
+          JSCValue *js_value_obj = webkit_javascript_result_get_js_value(js_result);
+          auto *js_value_json = jsc_value_to_json(js_value_obj, 0);
+          fl_method_call_respond_success(call, js_value_json ? fl_value_new_string(js_value_json) : nullptr, nullptr);
+          g_free(js_value_json);
+          webkit_javascript_result_unref(js_result);
+        }
+        g_object_unref(call);
+      },
+      g_object_ref(call));
+#endif
 }

@@ -1,3 +1,9 @@
+## 0.1.0
+* **Feature**: Added full API parity for Desktop (Linux, macOS, Windows) in `WebViewController`.
+* **Feature**: Added `loadAsset` method to simplify loading local Flutter assets.
+* **Fix**: Implemented backward compatible Linux build fix for older WebKitGTK versions.
+* **Refactor**: Improved `WebView` widget platform handling.
+
 ## 0.0.9
 * fix linux build
 ## 0.0.8
