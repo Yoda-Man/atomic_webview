@@ -1,0 +1,72 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode/ directory contains internal settings for Visual Studio Code.
+# It is not recommended to check this directory into source control.
+.vscode/
+
+# Flutter/Dart related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will create this folder for self-generated files
+.externalNativeBuild/
+
+# Xcode-specific
+#
+# n.b. these files should generally be kept out of the repository.
+# Refer to https://help.apple.com/xcode/mac/current/#/devc1a296260
+# for more details.
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/App.framework
+**/ios/Flutter/App.podspec
+**/ios/Flutter/App.framework.dSYM
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/GeneratedConfig.xcconfig
+**/ios/DerivedData/
+**/macos/Flutter/ephemeral/
+**/macos/Flutter/GeneratedConfig.xcconfig
+**/macos/Flutter/flutter_export_environment.sh
+
+# Windows-specific
+/windows/flutter/ephemeral/
+/windows/flutter/generated_plugin_registrant.cc
+/windows/flutter/generated_plugin_registrant.h
+/windows/flutter/generated_plugins.cmake
+
+# Linux-specific
+/linux/flutter/ephemeral/
+/linux/flutter/generated_plugin_registrant.cc
+/linux/flutter/generated_plugin_registrant.h
+/linux/flutter/generated_plugins.cmake
+
+# Symbol files
+*.pdb

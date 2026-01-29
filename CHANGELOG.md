@@ -1,3 +1,8 @@
+## 0.1.1
+* **Fix**: Resolved compilation errors on the Web platform by adding missing stubs to the web implementation.
+* **Feature**: Added comprehensive unit tests for `WebViewController` and platform handling.
+* **Docs**: Updated documentation and README with latest platform support details.
+
 ## 0.1.0
 * **Feature**: Added full API parity for Desktop (Linux, macOS, Windows) in `WebViewController`.
 * **Feature**: Added `loadAsset` method to simplify loading local Flutter assets.

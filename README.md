@@ -20,13 +20,13 @@ A powerful, cross-platform WebView for Flutter that seamlessly supports Android,
 | Windows | ✅ | Supported |
 | Web | ✅ | Supported |
 
-## Installation
+### Installation
 
 Add `atomic_webview` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  atomic_webview: ^0.1.0
+  atomic_webview: ^0.1.1
 ```
 
 ## Requirements

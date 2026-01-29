@@ -1,0 +1,11 @@
+# Files to ignore when publishing to pub.dev
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.git/
+.gitignore
+.pub-cache/
+.pub/
+.vscode/
+build/
+atomic_webview.iml
