@@ -3,9 +3,6 @@
 
 #include <flutter_plugin_registrar.h>
 
-#include <flutter/dart_project.h>
-#include <flutter/flutter_view_controller.h>
-
 #ifdef FLUTTER_PLUGIN_IMPL
 #define FLUTTER_PLUGIN_EXPORT __declspec(dllexport)
 #else

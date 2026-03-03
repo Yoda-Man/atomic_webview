@@ -17,7 +17,10 @@ class FlutterView {
 
   std::optional<LRESULT> HandleTopLevelWindowProc(HWND hwnd, UINT message, WPARAM w_param, LPARAM l_param);
 
-  [[nodiscard]] HWND GetWindow() const { return flutter_controller_->view()->GetNativeWindow(); }
+  [[nodiscard]] HWND GetWindow() const {
+    if (!flutter_controller_ || !flutter_controller_->view()) return nullptr;
+    return flutter_controller_->view()->GetNativeWindow();
+  }
 
   void ReloadSystemFonts();
 
