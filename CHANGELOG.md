@@ -1,3 +1,9 @@
+## 0.1.2
+* **Fix**: Resolved `MissingPluginException` on Windows by correcting a Dart field-shadowing bug in `WebViewController.init` that prevented the desktop controller from being assigned.
+* **Fix**: Added null guard in `FlutterView::GetWindow()` on Windows to prevent a crash when the optional Flutter title-bar bundle is absent.
+* **Fix**: Removed unnecessary `flutter_wrapper_app` headers from the public Windows plugin header to eliminate undeclared dependency issues.
+* **Fix**: Resolved Linux build failure (`no matching function for call to 'webkit_javascript_result_get_js_value'`) on Ubuntu 22.04+ (webkit2gtk-4.1). This also resolves the `MissingPluginException` for `create` on Linux that was caused by the compilation failure (Issue #2).
+
 ## 0.1.1
 * **Fix**: Resolved compilation errors on the Web platform by adding missing stubs to the web implementation.
 * **Feature**: Added comprehensive unit tests for `WebViewController` and platform handling.
