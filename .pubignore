@@ -1,11 +1,19 @@
-# Files to ignore when publishing to pub.dev
+# Dart/Flutter tooling artifacts
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-.git/
-.gitignore
-.pub-cache/
 .pub/
-.vscode/
 build/
-atomic_webview.iml
+
+# IDE settings
+.vscode/
+.idea/
+*.iml
+
+# Generated plugin registration (build-time artefacts, not sources)
+**/flutter/ephemeral/
+**/flutter/generated_plugin_registrant.cc
+**/flutter/generated_plugin_registrant.h
+**/flutter/generated_plugins.cmake
+**/Flutter/GeneratedPluginRegistrant.swift
+**/Flutter/ephemeral/
