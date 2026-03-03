@@ -7,9 +7,14 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 set(PLUGIN_NAME "atomic_webview_plugin")
 
 find_package(PkgConfig REQUIRED)
-# From Ubuntu 22.04 only find webkit2gtk-4.1
+# Prefer the GTK4 variant (webkit2gtk-4.1) available from Ubuntu 22.04 onwards.
 pkg_check_modules(WebKit IMPORTED_TARGET webkit2gtk-4.1)
-if (NOT WebKit_FOUND)
+if (WebKit_FOUND)
+  # webkit2gtk-4.1 removed the old WebKitJavascriptResult accessor API
+  # (webkit_javascript_result_get_js_value) even at versions < 2.40.
+  # Signal this to the C++ source so it uses a compatible code path.
+  target_compile_definitions(${PLUGIN_NAME} PRIVATE WEBKIT_IS_GTK4_VARIANT)
+else ()
   pkg_check_modules(WebKit REQUIRED IMPORTED_TARGET webkit2gtk-4.0)  # for backward compatibility
 endif ()
 

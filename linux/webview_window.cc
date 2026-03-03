@@ -236,16 +236,26 @@ void WebviewWindow::EvaluateJavaScript(const char *java_script, FlMethodCall *ca
       [](GObject *object, GAsyncResult *result, gpointer user_data) {
         auto *call = static_cast<FlMethodCall *>(user_data);
         GError *error = nullptr;
-        WebKitJavascriptResult *js_result = webkit_web_view_run_javascript_finish(WEBKIT_WEB_VIEW(object), result, &error);
+        auto *js_result = webkit_web_view_run_javascript_finish(WEBKIT_WEB_VIEW(object), result, &error);
         if (!js_result) {
           fl_method_call_respond_error(call, "failed to evaluate javascript.", error->message, nullptr, nullptr);
           g_error_free(error);
         } else {
+#if defined(WEBKIT_IS_GTK4_VARIANT)
+          // webkit2gtk-4.1 removed webkit_javascript_result_get_js_value;
+          // the result object is itself a JSCValue GObject.
+          JSCValue *js_value_obj = JSC_IS_VALUE(js_result) ? JSC_VALUE(js_result) : nullptr;
+          auto *js_value_json = js_value_obj ? jsc_value_to_json(js_value_obj, 0) : nullptr;
+          fl_method_call_respond_success(call, js_value_json ? fl_value_new_string(js_value_json) : nullptr, nullptr);
+          g_free(js_value_json);
+          g_object_unref(js_result);
+#else
           JSCValue *js_value_obj = webkit_javascript_result_get_js_value(js_result);
           auto *js_value_json = jsc_value_to_json(js_value_obj, 0);
           fl_method_call_respond_success(call, js_value_json ? fl_value_new_string(js_value_json) : nullptr, nullptr);
           g_free(js_value_json);
           webkit_javascript_result_unref(js_result);
+#endif
         }
         g_object_unref(call);
       },
