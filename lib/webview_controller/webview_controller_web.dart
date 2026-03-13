@@ -97,7 +97,7 @@ Page resource error:
       bool isWebviewAvailable =
           await webview_desktop.WebviewWindow.isWebviewAvailable();
       if (isWebviewAvailable) {
-        webview_desktop.Webview webview_desktop_controller =
+        webview_desktop_controller =
             await webview_desktop.WebviewWindow.create(
           configuration: webview_desktop.CreateConfiguration(
             titleBarTopPadding: Platform.isMacOS ? 20 : 0,

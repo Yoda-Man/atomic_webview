@@ -1,0 +1,19 @@
+# Dart/Flutter tooling artifacts
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub/
+build/
+
+# IDE settings
+.vscode/
+.idea/
+*.iml
+
+# Generated plugin registration (build-time artefacts, not sources)
+**/flutter/ephemeral/
+**/flutter/generated_plugin_registrant.cc
+**/flutter/generated_plugin_registrant.h
+**/flutter/generated_plugins.cmake
+**/Flutter/GeneratedPluginRegistrant.swift
+**/Flutter/ephemeral/
