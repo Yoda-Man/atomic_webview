@@ -1,3 +1,7 @@
+## 0.1.3
+* **Fix**: Removed the default blank desktop title-bar space so Linux WebViews fill the native window unless a custom title bar is explicitly configured (Issue #9).
+* **Maintenance**: Updated the minimum Flutter SDK to 3.41.9 / Dart 3.11.5 and refreshed package dependencies.
+
 ## 0.1.2
 * **Fix**: Resolved `MissingPluginException` on Windows by correcting a Dart field-shadowing bug in `WebViewController.init` that prevented the desktop controller from being assigned.
 * **Fix**: Added null guard in `FlutterView::GetWindow()` on Windows to prevent a crash when the optional Flutter title-bar bundle is absent.

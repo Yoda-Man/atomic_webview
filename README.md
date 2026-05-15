@@ -216,7 +216,7 @@ if (controller.is_desktop && controller.is_init) {
 
 ## Desktop Title Bar
 
-On desktop, a thin Flutter-powered title bar is displayed above the WebView. You can customise it in your app's `main()` with `runWebViewTitleBarWidget`:
+On desktop, you can opt into a thin Flutter-powered title bar above the WebView by setting `titleBarHeight` in `CreateConfiguration`. Handle the title-bar sub-engine in your app's `main()` with `runWebViewTitleBarWidget`:
 
 ```dart
 import 'package:atomic_webview/atomic_webview.dart';

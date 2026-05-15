@@ -35,6 +35,15 @@ void main() {
       expect((webview as WebviewImpl).viewId, 42);
       expect(log, hasLength(1));
       expect(log.first.method, 'create');
+      expect(log.first.arguments, containsPair('titleBarHeight', 0));
+    });
+
+    test('CreateConfiguration keeps title bar opt-in', () {
+      expect(const CreateConfiguration().titleBarHeight, 0);
+      expect(
+        const CreateConfiguration(titleBarHeight: 40).toMap(),
+        containsPair('titleBarHeight', 40),
+      );
     });
 
     test('WebViewController initialization on desktop', () async {
