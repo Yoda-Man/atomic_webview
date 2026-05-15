@@ -1,4 +1,4 @@
-## Unreleased
+## 0.1.4
 * **Fix**: Corrected Linux CMake target setup for WebKitGTK 4.1 so the desktop plugin registers reliably and avoids `MissingPluginException` on `webview_window.create` (Issue #8).
 
 ## 0.1.3
