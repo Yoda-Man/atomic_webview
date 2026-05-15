@@ -12,8 +12,8 @@ pkg_check_modules(WebKit IMPORTED_TARGET webkit2gtk-4.1)
 if (WebKit_FOUND)
   # webkit2gtk-4.1 removed the old WebKitJavascriptResult accessor API
   # (webkit_javascript_result_get_js_value) even at versions < 2.40.
-  # Signal this to the C++ source so it uses a compatible code path.
-  target_compile_definitions(${PLUGIN_NAME} PRIVATE WEBKIT_IS_GTK4_VARIANT)
+  # Signal this to the C++ source after the plugin target has been created.
+  set(WEBKIT_IS_GTK4_VARIANT TRUE)
 else ()
   pkg_check_modules(WebKit REQUIRED IMPORTED_TARGET webkit2gtk-4.0)  # for backward compatibility
 endif ()
@@ -29,6 +29,9 @@ apply_standard_settings(${PLUGIN_NAME})
 set_target_properties(${PLUGIN_NAME} PROPERTIES
         CXX_VISIBILITY_PRESET hidden)
 target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
+if (WEBKIT_IS_GTK4_VARIANT)
+  target_compile_definitions(${PLUGIN_NAME} PRIVATE WEBKIT_IS_GTK4_VARIANT)
+endif ()
 target_include_directories(${PLUGIN_NAME} INTERFACE
         "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter)
