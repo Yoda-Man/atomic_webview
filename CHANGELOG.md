@@ -1,3 +1,8 @@
+## 0.1.5
+* **Fix**: Ensured `WebViewController.init` marks controllers initialized before triggering rebuilds, so desktop WebView widgets rebuild with the correct state.
+* **Test**: Added regression coverage for desktop initialization ordering and Scaffold body layout constraints.
+* **Chore**: Raised SDK constraints to Flutter 3.44.4 / Dart 3.12.2 and updated direct dependencies to their latest resolvable versions.
+
 ## 0.1.2
 * **Fix**: Resolved `MissingPluginException` on Windows by correcting a Dart field-shadowing bug in `WebViewController.init` that prevented the desktop controller from being assigned.
 * **Fix**: Added null guard in `FlutterView::GetWindow()` on Windows to prevent a crash when the optional Flutter title-bar bundle is absent.

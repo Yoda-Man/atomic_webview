@@ -1,5 +1,5 @@
 name: atomic_webview
-version: 0.1.2
+version: 0.1.5
 description: "A cross-platform WebView for Android, iOS, macOS, Linux, Windows, and Web, with unified controller support."
 homepage: https://github.com/Yoda-Man/atomic_webview
 repository: https://github.com/Yoda-Man/atomic_webview
@@ -13,18 +13,18 @@ platforms:
   web:
 
 environment:
-  sdk: ^3.10.7
-  flutter: ">=3.10.0"
+  sdk: ^3.12.2
+  flutter: ">=3.44.4"
 
 dependencies:
   flutter:
     sdk: flutter
   path: ^1.9.1
-  universal_io: ^2.3.0
-  webview_flutter: ^4.13.1
-  webview_flutter_android: ^4.10.10
+  universal_io: ^2.3.1
+  webview_flutter: ^4.14.0
+  webview_flutter_android: ^4.13.0
   webview_flutter_web: ^0.2.3+4
-  webview_flutter_wkwebview: ^3.23.4    
+  webview_flutter_wkwebview: ^3.26.0
 
 dev_dependencies:
   flutter_test:

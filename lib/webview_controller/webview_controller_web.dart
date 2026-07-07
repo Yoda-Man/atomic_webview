@@ -16,7 +16,7 @@ class WebViewController {
   bool is_init = false;
   bool is_desktop =
       ((Platform.isLinux || Platform.isMacOS || Platform.isWindows) &&
-          kIsWeb == false);
+      kIsWeb == false);
   bool is_mobile = (Platform.isAndroid || Platform.isIOS || kIsWeb);
   WebViewController();
   Future<void> init({
@@ -30,20 +30,20 @@ class WebViewController {
           is webview_flutter_wkwebview.WebKitWebViewPlatform) {
         params =
             webview_flutter_wkwebview.WebKitWebViewControllerCreationParams(
-          allowsInlineMediaPlayback: true,
-          mediaTypesRequiringUserAction: const <webview_flutter_wkwebview
-              .PlaybackMediaTypes>{},
-        );
+              allowsInlineMediaPlayback: true,
+              mediaTypesRequiringUserAction:
+                  const <webview_flutter_wkwebview.PlaybackMediaTypes>{},
+            );
       } else {
         params =
             const webview_flutter.PlatformWebViewControllerCreationParams();
       }
       webview_mobile_controller =
           webview_flutter.WebViewController.fromPlatformCreationParams(params);
-      setState(() {});
       if (!kIsWeb) {
-        webview_mobile_controller
-            .setJavaScriptMode(webview_flutter.JavaScriptMode.unrestricted);
+        webview_mobile_controller.setJavaScriptMode(
+          webview_flutter.JavaScriptMode.unrestricted,
+        );
         webview_mobile_controller.setNavigationDelegate(
           webview_flutter.NavigationDelegate(
             onProgress: (int progress) {
@@ -77,9 +77,9 @@ Page resource error:
         webview_mobile_controller.addJavaScriptChannel(
           'Toaster',
           onMessageReceived: (webview_flutter.JavaScriptMessage message) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(message.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(message.message)));
           },
         );
       }
@@ -93,18 +93,18 @@ Page resource error:
             .setMediaPlaybackRequiresUserGesture(false);
       }
       is_init = true;
+      setState(() {});
     } else if (is_desktop) {
       bool isWebviewAvailable =
           await webview_desktop.WebviewWindow.isWebviewAvailable();
       if (isWebviewAvailable) {
-        webview_desktop_controller =
-            await webview_desktop.WebviewWindow.create(
+        webview_desktop_controller = await webview_desktop.WebviewWindow.create(
           configuration: webview_desktop.CreateConfiguration(
             titleBarTopPadding: Platform.isMacOS ? 20 : 0,
           ),
         );
-        setState(() {});
         is_init = true;
+        setState(() {});
         webview_desktop_controller.setBrightness(Brightness.dark);
         webview_desktop_controller.launch(uri.toString());
       }

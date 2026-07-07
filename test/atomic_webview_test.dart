@@ -1,6 +1,7 @@
 import 'package:atomic_webview/atomic_webview.dart';
 import 'package:atomic_webview/webview_desktop/src/webview_impl.dart';
 import 'package:atomic_webview/webview_desktop/webview_desktop_app.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -45,6 +46,82 @@ void main() {
       // We can't easily mock BuildContext without a widget tester, so we test parts of it.
       expect(controller.is_init, isFalse);
     });
+
+    testWidgets(
+      'WebViewController.init marks desktop controller initialized before rebuilding',
+      (tester) async {
+        final controller = WebViewController();
+        final setStateObservations = <bool>[];
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder: (context) {
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        );
+
+        final context = tester.element(find.byType(SizedBox));
+
+        await controller.init(
+          context: context,
+          setState: (fn) {
+            fn();
+            setStateObservations.add(controller.is_init);
+          },
+          uri: Uri.parse('https://example.com'),
+        );
+
+        if (controller.is_desktop) {
+          expect(setStateObservations, <bool>[true]);
+          expect(controller.is_init, isTrue);
+          expect(
+            log.map((call) => call.method),
+            containsAllInOrder(['create', 'setBrightness', 'launch']),
+          );
+        }
+      },
+    );
+
+    testWidgets(
+      'desktop WebView placeholder is constrained to the Scaffold body',
+      (tester) async {
+        final controller = WebViewController()
+          ..is_init = true
+          ..is_desktop = true
+          ..is_mobile = false;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              appBar: AppBar(title: const Text('Atomic Webview Test')),
+              body: Stack(
+                children: [
+                  const Text('Home'),
+                  WebView(controller: controller),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        final scaffoldBox = tester.renderObject<RenderBox>(
+          find.byType(Scaffold),
+        );
+        final appBarBox = tester.renderObject<RenderBox>(find.byType(AppBar));
+        final webViewBox = tester.renderObject<RenderBox>(find.byType(WebView));
+        final webViewTop = webViewBox.localToGlobal(Offset.zero).dy;
+
+        expect(webViewTop, appBarBox.size.height);
+        expect(webViewBox.size.width, scaffoldBox.size.width);
+        expect(
+          webViewBox.size.height,
+          scaffoldBox.size.height - appBarBox.size.height,
+        );
+      },
+    );
 
     test('WebViewControllerExtension Methods (Desktop Path)', () async {
       final controller = WebViewController();
