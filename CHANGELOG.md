@@ -13,11 +13,11 @@
 * **Chore**: Raised SDK constraints to Flutter 3.44.4 / Dart 3.12.2 and updated direct dependencies to their latest resolvable versions.
 
 ## 0.1.4
-* **Fix**: Corrected Linux CMake target setup for WebKitGTK 4.1 so the desktop plugin registers reliably.
+* **Fix**: Corrected Linux CMake target setup for WebKitGTK 4.1 so the desktop plugin registers reliably and avoids `MissingPluginException` on `webview_window.create` (Issue #8).
 
 ## 0.1.3
-* **Fix**: Removed the default blank desktop title-bar space unless a custom title bar is configured.
-* **Chore**: Updated the minimum Flutter/Dart SDK and dependencies.
+* **Fix**: Removed the default blank desktop title-bar space so Linux WebViews fill the native window unless a custom title bar is explicitly configured (Issue #9).
+* **Maintenance**: Updated the minimum Flutter SDK to 3.41.9 / Dart 3.11.5 and refreshed package dependencies.
 
 ## 0.1.2
 * **Fix**: Resolved `MissingPluginException` on Windows by correcting a Dart field-shadowing bug in `WebViewController.init` that prevented the desktop controller from being assigned.

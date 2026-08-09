@@ -83,18 +83,22 @@ WebviewWindow::WebviewWindow(
   box_ = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
   gtk_container_add(GTK_CONTAINER(window_), GTK_WIDGET(box_));
 
-  // initial flutter_view
-  g_autoptr(FlDartProject) project = fl_dart_project_new();
-  const char *args[] = {"web_view_title_bar", g_strdup_printf("%ld", window_id), nullptr};
-  fl_dart_project_set_dart_entrypoint_arguments(project, const_cast<char **>(args));
-  auto *title_bar = fl_view_new(project);
+  GtkWidget *title_bar = nullptr;
+  if (title_bar_height > 0) {
+    // initial flutter_view
+    g_autoptr(FlDartProject) project = fl_dart_project_new();
+    g_autofree gchar *window_id_arg = g_strdup_printf("%ld", window_id);
+    const char *args[] = {"web_view_title_bar", window_id_arg, nullptr};
+    fl_dart_project_set_dart_entrypoint_arguments(project, const_cast<char **>(args));
+    title_bar = GTK_WIDGET(fl_view_new(project));
 
-  g_autoptr(FlPluginRegistrar) atomic_webview_registrar =
-      fl_plugin_registry_get_registrar_for_plugin(FL_PLUGIN_REGISTRY(title_bar), "AtomicWebviewPlugin");
-  client_message_channel_plugin_register_with_registrar(atomic_webview_registrar);
+    g_autoptr(FlPluginRegistrar) atomic_webview_registrar =
+        fl_plugin_registry_get_registrar_for_plugin(FL_PLUGIN_REGISTRY(title_bar), "AtomicWebviewPlugin");
+    client_message_channel_plugin_register_with_registrar(atomic_webview_registrar);
 
-  gtk_widget_set_size_request(GTK_WIDGET(title_bar), -1, title_bar_height);
-  gtk_box_pack_start(box_, GTK_WIDGET(title_bar), FALSE, FALSE, 0);
+    gtk_widget_set_size_request(title_bar, -1, title_bar_height);
+    gtk_box_pack_start(box_, title_bar, FALSE, FALSE, 0);
+  }
 
   // initial web_view
   webview_ = webkit_web_view_new();
@@ -116,7 +120,9 @@ WebviewWindow::WebviewWindow(
 
   gtk_widget_grab_focus(GTK_WIDGET(webview_));
   gtk_widget_show_all(window_);
-  gtk_widget_queue_resize(GTK_WIDGET(title_bar));
+  if (title_bar != nullptr) {
+    gtk_widget_queue_resize(title_bar);
+  }
 
 }
 

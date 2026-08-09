@@ -7,6 +7,10 @@ class CreateConfiguration {
   /// the title of window
   final String title;
 
+  /// Height of the optional Flutter-powered title bar.
+  ///
+  /// Defaults to zero so the WebView fills the native window unless callers
+  /// explicitly opt into a custom title bar with [runWebViewTitleBarWidget].
   final int titleBarHeight;
 
   final int titleBarTopPadding;
@@ -17,7 +21,7 @@ class CreateConfiguration {
     this.windowWidth = 1280,
     this.windowHeight = 720,
     this.title = "",
-    this.titleBarHeight = 40,
+    this.titleBarHeight = 0,
     this.titleBarTopPadding = 0,
     this.userDataFolderWindows = 'webview_window_WebView2',
   });

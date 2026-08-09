@@ -170,6 +170,14 @@ if (controller.is_desktop && controller.is_init) {
 }
 ```
 
+## Desktop title bar
+
+Desktop applications can opt into a Flutter-powered title bar above the WebView
+by setting `titleBarHeight` in `CreateConfiguration`. Handle the title-bar
+sub-engine in the application's `main()` with `runWebViewTitleBarWidget`.
+The default height is zero, so the WebView fills the native window unless the
+application explicitly enables this feature.
+
 ## Security
 
 - Only load content you trust. JavaScript is enabled for application content.
