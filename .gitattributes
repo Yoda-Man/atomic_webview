@@ -1,2 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Preserve official WebView2 SDK artifacts byte-for-byte.
+windows/WebView2.h -text -diff
+windows/WebView2EnvironmentOptions.h -text -diff
+windows/libs/**/*.dll binary
+windows/libs/**/*.lib binary

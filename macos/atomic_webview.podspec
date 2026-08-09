@@ -4,19 +4,19 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'atomic_webview'
-  s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
+  s.version          = '0.1.6'
+  s.summary          = 'Native macOS support for the Atomic Webview Flutter plugin.'
   s.description      = <<-DESC
-A new flutter plugin project.
+Creates and controls a native WKWebView window for Atomic Webview.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/Yoda-Man/atomic_webview'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Yoda-Man' => 'https://github.com/Yoda-Man' }
   s.source           = { :path => '.' }
-  s.source_files     = 'Classes/**/*'
+  s.source_files     = 'atomic_webview/Sources/atomic_webview/**/*.swift'
   s.dependency 'FlutterMacOS'
 
-  s.platform = :osx, '10.12'
+  s.platform = :osx, '10.15'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.swift_version = '5.0'
 end

@@ -23,17 +23,15 @@ class CreateConfiguration {
   });
 
   factory CreateConfiguration.platform() {
-    return CreateConfiguration(
-      titleBarTopPadding: Platform.isMacOS ? 24 : 0,
-    );
+    return CreateConfiguration(titleBarTopPadding: Platform.isMacOS ? 24 : 0);
   }
 
   Map toMap() => {
-        "windowWidth": windowWidth,
-        "windowHeight": windowHeight,
-        "title": title,
-        "titleBarHeight": titleBarHeight,
-        "titleBarTopPadding": titleBarTopPadding,
-        "userDataFolderWindows": userDataFolderWindows,
-      };
+    "windowWidth": windowWidth,
+    "windowHeight": windowHeight,
+    "title": title,
+    "titleBarHeight": titleBarHeight,
+    "titleBarTopPadding": titleBarTopPadding,
+    "userDataFolderWindows": userDataFolderWindows,
+  };
 }

@@ -6,15 +6,20 @@
 #include "web_view_window_plugin.h"
 
 #include <map>
+#include <stdexcept>
+#include <variant>
 
 namespace {
 
 int64_t next_window_id_ = 0;
 
 bool IsWebViewRuntimeAvailable() {
-  LPWSTR version_info;
-  GetAvailableCoreWebView2BrowserVersionString(nullptr, &version_info);
-  return version_info != nullptr;
+  LPWSTR version_info = nullptr;
+  const HRESULT result =
+      GetAvailableCoreWebView2BrowserVersionString(nullptr, &version_info);
+  const bool available = SUCCEEDED(result) && version_info != nullptr;
+  CoTaskMemFree(version_info);
+  return available;
 }
 
 }  // namespace
@@ -45,6 +50,22 @@ WebviewWindowPlugin::~WebviewWindowPlugin() = default;
 void WebviewWindowPlugin::HandleMethodCall(
     const flutter::MethodCall<flutter::EncodableValue> &method_call,
     std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
+  const auto &method = method_call.method_name();
+  const bool requires_arguments =
+      method == "create" || method == "launch" ||
+      method == "addScriptToExecuteOnDocumentCreated" ||
+      method == "setApplicationNameForUserAgent" || method == "back" ||
+      method == "forward" || method == "reload" || method == "stop" ||
+      method == "close" || method == "evaluateJavaScript" ||
+      method == "postWebMessageAsString" ||
+      method == "postWebMessageAsJson" || method == "openDevToolsWindow";
+  if (requires_arguments &&
+      std::get_if<flutter::EncodableMap>(method_call.arguments()) == nullptr) {
+    result->Error("invalid_arguments", "Expected a map of method arguments");
+    return;
+  }
+
+  try {
   if (method_call.method_name() == "create") {
     if (!IsWebViewRuntimeAvailable()) {
       result->Error("0", "WebView runtime not available");
@@ -246,5 +267,14 @@ void WebviewWindowPlugin::HandleMethodCall(
     result->Success();
   } else {
     result->NotImplemented();
+  }
+  } catch (const std::bad_variant_access &error) {
+    if (result) {
+      result->Error("invalid_arguments", error.what());
+    }
+  } catch (const std::out_of_range &error) {
+    if (result) {
+      result->Error("invalid_arguments", error.what());
+    }
   }
 }

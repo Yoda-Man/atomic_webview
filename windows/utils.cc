@@ -47,18 +47,6 @@ void ClipOrCenterRectToMonitor(LPRECT prc, UINT flags) {
   }
 }
 
-void ClipOrCenterWindowToMonitor(HWND hwnd, UINT flags) {
-  RECT rc;
-  GetWindowRect(hwnd, &rc);
-  ClipOrCenterRectToMonitor(&rc, flags);
-  SetWindowPos(hwnd, nullptr, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-}
-
-bool SetWindowBackgroundTransparent(HWND hwnd) {
-  // TODO
-  return false;
-}
-
 static std::unique_ptr<std::set<LPCWSTR>> class_registered_;
 
 const wchar_t *RegisterWindowClass(LPCWSTR class_name, WNDPROC wnd_proc) {

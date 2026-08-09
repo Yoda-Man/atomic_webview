@@ -13,11 +13,16 @@ gboolean on_load_failed_with_tls_errors(
     GTlsCertificateFlags errors,
     gpointer user_data) {
   auto *webview = static_cast<WebviewWindow *>(user_data);
-  g_critical("on_load_failed_with_tls_errors: %s %p error= %d", failing_uri, webview, errors);
-  // TODO allow certificate for some certificate ?
-  // maybe we can use the pem from https://source.chromium.org/chromium/chromium/src/+/master:net/data/ssl/ev_roots/
-//  webkit_web_context_allow_tls_certificate_for_host(webkit_web_view_get_context(web_view), certificate, uri->host);
-//  webkit_web_view_load_uri(web_view, failing_uri);
+  webview->OnLoadFailed(failing_uri, "TLS certificate validation failed",
+                        static_cast<int>(errors));
+  return false;
+}
+
+gboolean on_load_failed(WebKitWebView *web_view, WebKitLoadEvent load_event,
+                        const char *failing_uri, GError *error,
+                        gpointer user_data) {
+  auto *window = static_cast<WebviewWindow *>(user_data);
+  window->OnLoadFailed(failing_uri, error->message, error->code);
   return false;
 }
 
@@ -95,6 +100,8 @@ WebviewWindow::WebviewWindow(
   webview_ = webkit_web_view_new();
   g_signal_connect(G_OBJECT(webview_), "load-failed-with-tls-errors",
                    G_CALLBACK(on_load_failed_with_tls_errors), this);
+  g_signal_connect(G_OBJECT(webview_), "load-failed",
+                   G_CALLBACK(on_load_failed), this);
   g_signal_connect(G_OBJECT(webview_), "create",
                    G_CALLBACK(on_create), this);
   g_signal_connect(G_OBJECT(webview_), "load-changed",
@@ -177,6 +184,19 @@ void WebviewWindow::OnLoadChanged(WebKitLoadEvent load_event) {
     default :break;
   }
 
+}
+
+void WebviewWindow::OnLoadFailed(const char *url, const char *description,
+                                 int code) {
+  auto *args = fl_value_new_map();
+  fl_value_set(args, fl_value_new_string("id"), fl_value_new_int(window_id_));
+  fl_value_set(args, fl_value_new_string("description"),
+               fl_value_new_string(description));
+  fl_value_set(args, fl_value_new_string("code"), fl_value_new_int(code));
+  fl_value_set(args, fl_value_new_string("url"), fl_value_new_string(url));
+  fl_method_channel_invoke_method(FL_METHOD_CHANNEL(method_channel_),
+                                  "onNavigationError", args, nullptr, nullptr,
+                                  nullptr);
 }
 
 void WebviewWindow::GoForward() {

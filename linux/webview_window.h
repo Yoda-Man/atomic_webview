@@ -30,6 +30,8 @@ class WebviewWindow {
 
   void OnLoadChanged(WebKitLoadEvent load_event);
 
+  void OnLoadFailed(const char *url, const char *description, int code);
+
   void GoBack();
 
   void GoForward();

@@ -1,6 +1,5 @@
 import 'package:atomic_webview/atomic_webview.dart';
 import 'package:atomic_webview/webview_desktop/src/webview_impl.dart';
-import 'package:atomic_webview/webview_desktop/webview_desktop_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -45,6 +44,21 @@ void main() {
 
       // We can't easily mock BuildContext without a widget tester, so we test parts of it.
       expect(controller.is_init, isFalse);
+      expect(() => controller.goBackSync(), throwsStateError);
+      expect(
+        () => controller.validateUri(Uri.parse('javascript:alert(1)')),
+        throwsArgumentError,
+      );
+      expect(
+        () => controller.validateUri(Uri.parse('https://example.com')),
+        returnsNormally,
+      );
+    });
+
+    test('title bar argument parsing rejects incomplete arguments', () {
+      expect(runWebViewTitleBarWidget(const []), isFalse);
+      expect(runWebViewTitleBarWidget(const ['web_view_title_bar']), isFalse);
+      expect(runWebViewTitleBarWidget(const ['other', '1']), isFalse);
     });
 
     testWidgets(
@@ -79,7 +93,15 @@ void main() {
           expect(controller.is_init, isTrue);
           expect(
             log.map((call) => call.method),
-            containsAllInOrder(['create', 'setBrightness', 'launch']),
+            containsAllInOrder(['create', 'launch']),
+          );
+          await expectLater(
+            controller.init(
+              context: context,
+              setState: (_) {},
+              uri: Uri.parse('https://example.com'),
+            ),
+            throwsStateError,
           );
         }
       },
@@ -148,7 +170,58 @@ void main() {
         // Test evaluateJavaScript
         await controller.evaluateJavaScript('console.log("test")');
         expect(log.any((m) => m.method == 'evaluateJavaScript'), isTrue);
+
+        await controller.go(uri: Uri.parse('https://flutter.dev'));
+        await controller.goForward();
+        controller.goSync(uri: Uri.parse('https://dart.dev'));
+        controller.goForwardSync();
+
+        expect(log.any((m) => m.method == 'launch'), isTrue);
+        expect(log.any((m) => m.method == 'forward'), isTrue);
       }
+    });
+
+    test('WebviewImpl forwards callbacks and advanced methods', () async {
+      final webview = WebviewImpl(7, channel);
+      String? requestedUrl;
+      String? message;
+      String? navigationError;
+
+      webview.addOnUrlRequestCallback((url) => requestedUrl = url);
+      webview.addOnWebMessageReceivedCallback((value) => message = value);
+      webview.setOnNavigationErrorCallback((description, code, url) {
+        navigationError = '$description:$code:$url';
+      });
+
+      webview.notifyUrlChanged('https://example.com/path');
+      webview.notifyWebMessageReceived('hello');
+      webview.onNavigationStarted();
+      expect(webview.isNavigating.value, isTrue);
+      webview.onNavigationError('failed', 12, 'https://example.com');
+
+      expect(requestedUrl, 'https://example.com/path');
+      expect(message, 'hello');
+      expect(navigationError, 'failed:12:https://example.com');
+      expect(webview.isNavigating.value, isFalse);
+
+      await webview.setApplicationNameForUserAgent('Atomic/1.0');
+      await webview.addScriptToExecuteOnDocumentCreated(
+        'window.atomic = true;',
+      );
+      await webview.openDevToolsWindow();
+      await webview.postWebMessageAsString('hello');
+      await webview.postWebMessageAsJson('{"ok":true}');
+
+      expect(
+        log.map((call) => call.method),
+        containsAll(<String>[
+          'setApplicationNameForUserAgent',
+          'addScriptToExecuteOnDocumentCreated',
+          'openDevToolsWindow',
+          'postWebMessageAsString',
+          'postWebMessageAsJson',
+        ]),
+      );
     });
 
     test('Platform detection logic', () {

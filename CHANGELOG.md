@@ -1,7 +1,23 @@
+## 0.1.6
+* **Critical fix**: Restored the WebKitGTK 4.1 CMake target-order correction that regressed in 0.1.5.
+* **Fix**: Completed macOS method-channel results and corrected JavaScript handler removal.
+* **Fix**: Added URI policy validation, observable navigation errors, awaited initialization, lifecycle disposal, and reliable desktop asset extraction.
+* **Fix**: Added deterministic unsupported-method errors for Windows-only desktop capabilities.
+* **Security**: Removed hardcoded navigation/UI behavior, stopped logging full URLs, validated native channel arguments, and updated the versioned WebView2 SDK for x86, x64, and ARM64.
+* **Test**: Added a cross-platform example, expanded unit coverage, and introduced Linux, macOS, Windows, Android, and Web CI builds.
+* **Docs**: Added architecture, support, release/rollback, security, ownership, contribution, and dependency documentation.
+
 ## 0.1.5
 * **Fix**: Ensured `WebViewController.init` marks controllers initialized before triggering rebuilds, so desktop WebView widgets rebuild with the correct state.
 * **Test**: Added regression coverage for desktop initialization ordering and Scaffold body layout constraints.
 * **Chore**: Raised SDK constraints to Flutter 3.44.4 / Dart 3.12.2 and updated direct dependencies to their latest resolvable versions.
+
+## 0.1.4
+* **Fix**: Corrected Linux CMake target setup for WebKitGTK 4.1 so the desktop plugin registers reliably.
+
+## 0.1.3
+* **Fix**: Removed the default blank desktop title-bar space unless a custom title bar is configured.
+* **Chore**: Updated the minimum Flutter/Dart SDK and dependencies.
 
 ## 0.1.2
 * **Fix**: Resolved `MissingPluginException` on Windows by correcting a Dart field-shadowing bug in `WebViewController.init` that prevented the desktop controller from being assigned.

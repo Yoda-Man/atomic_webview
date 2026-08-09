@@ -5,7 +5,10 @@
 
 #include <memory>
 #include <cstring>
+#include <initializer_list>
 #include <map>
+#include <utility>
+#include <vector>
 
 #include <webkit2/webkit2.h>
 
@@ -36,6 +39,69 @@ static void webview_window_plugin_handle_method_call(
     FlMethodCall *method_call) {
 
   const gchar *method = fl_method_call_get_name(method_call);
+
+  auto validate_args = [method_call](
+                           FlValue *args,
+                           std::initializer_list<std::pair<const char *, FlValueType>>
+                               required) {
+    if (fl_value_get_type(args) != FL_VALUE_TYPE_MAP) {
+      fl_method_call_respond_error(method_call, "invalid_arguments",
+                                   "Expected a map of method arguments", nullptr,
+                                   nullptr);
+      return false;
+    }
+    for (const auto &[name, type] : required) {
+      FlValue *value = fl_value_lookup_string(args, name);
+      if (value == nullptr || fl_value_get_type(value) != type) {
+        std::string message = "Missing or invalid argument: ";
+        message += name;
+        fl_method_call_respond_error(method_call, "invalid_arguments",
+                                     message.c_str(), nullptr, nullptr);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  auto *method_args = fl_method_call_get_args(method_call);
+  if (strcmp(method, "create") == 0 &&
+      !validate_args(method_args,
+                     {{"windowWidth", FL_VALUE_TYPE_INT},
+                      {"windowHeight", FL_VALUE_TYPE_INT},
+                      {"title", FL_VALUE_TYPE_STRING},
+                      {"titleBarHeight", FL_VALUE_TYPE_INT}})) {
+    return;
+  }
+  if (strcmp(method, "launch") == 0 &&
+      !validate_args(method_args,
+                     {{"viewId", FL_VALUE_TYPE_INT},
+                      {"url", FL_VALUE_TYPE_STRING}})) {
+    return;
+  }
+  if (strcmp(method, "addScriptToExecuteOnDocumentCreated") == 0 &&
+      !validate_args(method_args,
+                     {{"viewId", FL_VALUE_TYPE_INT},
+                      {"javaScript", FL_VALUE_TYPE_STRING}})) {
+    return;
+  }
+  if (strcmp(method, "setApplicationNameForUserAgent") == 0 &&
+      !validate_args(method_args,
+                     {{"viewId", FL_VALUE_TYPE_INT},
+                      {"applicationName", FL_VALUE_TYPE_STRING}})) {
+    return;
+  }
+  if ((strcmp(method, "back") == 0 || strcmp(method, "forward") == 0 ||
+       strcmp(method, "reload") == 0 || strcmp(method, "stop") == 0 ||
+       strcmp(method, "close") == 0) &&
+      !validate_args(method_args, {{"viewId", FL_VALUE_TYPE_INT}})) {
+    return;
+  }
+  if (strcmp(method, "evaluateJavaScript") == 0 &&
+      !validate_args(method_args,
+                     {{"viewId", FL_VALUE_TYPE_INT},
+                      {"javaScriptString", FL_VALUE_TYPE_STRING}})) {
+    return;
+  }
 
   if (strcmp(method, "create") == 0) {
     auto *args = fl_method_call_get_args(method_call);
@@ -91,17 +157,41 @@ static void webview_window_plugin_handle_method_call(
     self->windows->at(window_id)->RunJavaScriptWhenContentReady(java_script);
     fl_method_call_respond_success(method_call, nullptr, nullptr);
   } else if (strcmp(method, "clearAll") == 0) {
-    for (const auto &item: *self->windows) {
-      item.second->Close();
+    std::vector<WebviewWindow *> open_windows;
+    open_windows.reserve(self->windows->size());
+    for (const auto &item : *self->windows) {
+      open_windows.push_back(item.second.get());
+    }
+    for (auto *window : open_windows) {
+      window->Close();
     }
     // If application didn't create a webview, but we called webkit_website_data_manager_clear, there will be a segment fault.
     // To avoid crash, we create a fake webview first and then clear all data.
     auto *web_view = webkit_web_view_new();
     auto *context = webkit_web_view_get_context(WEBKIT_WEB_VIEW(web_view));
     auto *website_data_manager = webkit_web_context_get_website_data_manager(context);
-    webkit_website_data_manager_clear(website_data_manager, WEBKIT_WEBSITE_DATA_ALL, 0,
-                                      nullptr, nullptr, nullptr);
-    fl_method_call_respond_success(method_call, nullptr, nullptr);
+    webkit_website_data_manager_clear(
+        website_data_manager, WEBKIT_WEBSITE_DATA_ALL, 0, nullptr,
+        [](GObject *object, GAsyncResult *result, gpointer user_data) {
+          auto *call = static_cast<FlMethodCall *>(user_data);
+          GError *error = nullptr;
+          const bool cleared = webkit_website_data_manager_clear_finish(
+              WEBKIT_WEBSITE_DATA_MANAGER(object), result, &error);
+          if (cleared) {
+            fl_method_call_respond_success(call, nullptr, nullptr);
+          } else {
+            fl_method_call_respond_error(
+                call, "clear_failed",
+                error != nullptr ? error->message : "Failed to clear WebView data",
+                nullptr, nullptr);
+          }
+          if (error != nullptr) {
+            g_error_free(error);
+          }
+          g_object_unref(call);
+        },
+        g_object_ref(method_call));
+    g_object_unref(web_view);
   } else if (strcmp(method, "setApplicationNameForUserAgent") == 0) {
     auto *args = fl_method_call_get_args(method_call);
     if (fl_value_get_type(args) != FL_VALUE_TYPE_MAP) {
@@ -199,6 +289,12 @@ static void webview_window_plugin_handle_method_call(
     }
     auto *js = fl_value_get_string(fl_value_lookup_string(args, "javaScriptString"));
     self->windows->at(window_id)->EvaluateJavaScript(js, method_call);
+  } else if (strcmp(method, "openDevToolsWindow") == 0 ||
+             strcmp(method, "postWebMessageAsString") == 0 ||
+             strcmp(method, "postWebMessageAsJson") == 0) {
+    fl_method_call_respond_error(
+        method_call, "unsupported",
+        "This method is only supported on Windows", nullptr, nullptr);
   } else {
     fl_method_call_respond_not_implemented(method_call, nullptr);
   }

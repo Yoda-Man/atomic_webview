@@ -206,11 +206,8 @@ WebviewWindow::MessageHandler(
       }
 
       if (flutter_action_bar_) {
-        // FIXME(BOYAN) remove this trick if flutter provide a properly way to force redraw the flutter view.
-        // When user only change the height of window, flutter title bar height will not change, because the title_bar_height
-        // is a fixed value. In this situation, the flutter view will not perform draw since no size changed. So we need
-        // perform a force redraw to flutter view. Although flutter provide a function FlutterDesktopViewControllerForceRedraw.
-        // https://github.com/flutter/engine/pull/24186 But we can not use this because it not provided on wrapper.
+        // Toggling the width forces a redraw when only the host window height
+        // changes; Flutter's Windows wrapper does not expose ForceRedraw.
         if (last_title_bar_width_ != rect.right - rect.left) {
           // Size and position the flutter window.
           last_title_bar_width_ = rect.right - rect.left;
@@ -243,4 +240,3 @@ WebviewWindow *WebviewWindow::GetThisFromHandle(HWND const window) noexcept {
   return reinterpret_cast<WebviewWindow *>(
       GetWindowLongPtr(window, GWLP_USERDATA));
 }
-

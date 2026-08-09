@@ -5,8 +5,8 @@ typedef JavaScriptMessageHandler = void Function(String name, dynamic body);
 
 typedef PromptHandler = String Function(String prompt, String defaultText);
 
-typedef OnHistoryChangedCallback = void Function(
-    bool canGoBack, bool canGoForward);
+typedef OnHistoryChangedCallback =
+    void Function(bool canGoBack, bool canGoForward);
 
 /// Callback when WebView start to load a URL.
 /// [url] is the URL string.
@@ -15,6 +15,9 @@ typedef OnUrlRequestCallback = void Function(String url);
 /// Callback when WebView receives a web message
 /// [message] constains the webmessage
 typedef OnWebMessageReceivedCallback = void Function(String message);
+
+typedef OnNavigationErrorCallback =
+    void Function(String description, int? code, String? url);
 
 abstract class Webview {
   Future<void> get onClose;
@@ -25,24 +28,26 @@ abstract class Webview {
   /// Install a message handler that you can call from your Javascript code.
   ///
   /// available: macOS (10.10+)
-  void registerJavaScriptMessageHandler(
-      String name, JavaScriptMessageHandler handler);
+  Future<void> registerJavaScriptMessageHandler(
+    String name,
+    JavaScriptMessageHandler handler,
+  );
 
   /// available: macOS
-  void unregisterJavaScriptMessageHandler(String name);
+  Future<void> unregisterJavaScriptMessageHandler(String name);
 
   /// available: macOS
   void setPromptHandler(PromptHandler? handler);
 
   /// Navigates to the given URL.
-  void launch(String url);
+  Future<void> launch(String url);
 
   /// change webview theme.
   ///
   /// available only: macOS (Brightness.dark only 10.14+)
-  void setBrightness(Brightness? brightness);
+  Future<void> setBrightness(Brightness? brightness);
 
-  void addScriptToExecuteOnDocumentCreated(String javaScript);
+  Future<void> addScriptToExecuteOnDocumentCreated(String javaScript);
 
   /// Append a string to the webview's user-agent.
   Future<void> setApplicationNameForUserAgent(String applicationName);
@@ -59,11 +64,16 @@ abstract class Webview {
   /// Stop all navigations and pending resource fetches.
   Future<void> stop();
 
-  /// Opens the Browser DevTools in a separate window
+  /// Opens the Browser DevTools in a separate window on Windows.
+  ///
+  /// Throws an `unsupported` [PlatformException] on macOS and Linux.
   Future<void> openDevToolsWindow();
 
   /// Register a callback that will be invoked when the webview history changes.
   void setOnHistoryChangedCallback(OnHistoryChangedCallback? callback);
+
+  /// Registers the callback used for main-frame navigation failures.
+  void setOnNavigationErrorCallback(OnNavigationErrorCallback? callback);
 
   void addOnUrlRequestCallback(OnUrlRequestCallback callback);
 
@@ -72,17 +82,22 @@ abstract class Webview {
   void addOnWebMessageReceivedCallback(OnWebMessageReceivedCallback callback);
 
   void removeOnWebMessageReceivedCallback(
-      OnWebMessageReceivedCallback callback);
+    OnWebMessageReceivedCallback callback,
+  );
 
   /// Close the web view window.
-  void close();
+  Future<void> close();
 
   /// evaluate JavaScript in the web view.
   Future<String?> evaluateJavaScript(String javaScript);
 
-  /// post a web message as String to the top level document in this WebView
+  /// Posts a web message as a string on Windows.
+  ///
+  /// Throws an `unsupported` [PlatformException] on macOS and Linux.
   Future<void> postWebMessageAsString(String webMessage);
 
-  /// post a web message as JSON to the top level document in this WebView
+  /// Posts a web message as JSON on Windows.
+  ///
+  /// Throws an `unsupported` [PlatformException] on macOS and Linux.
   Future<void> postWebMessageAsJson(String webMessage);
 }

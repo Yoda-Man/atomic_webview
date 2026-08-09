@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.4
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed lib test example/lib example/test tool
+      - run: flutter analyze
+      - run: flutter test --coverage
+      - run: dart run tool/check_coverage.dart coverage/lcov.info 30
+      - run: dart pub publish --dry-run
+      - run: flutter pub get
+        working-directory: example
+      - run: flutter analyze
+        working-directory: example
+      - run: flutter test
+        working-directory: example
+      - run: flutter build web
+        working-directory: example
+
+  native-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: linux
+            webkit: libwebkit2gtk-4.1-dev
+          - os: ubuntu-22.04
+            target: linux
+            webkit: libwebkit2gtk-4.0-dev
+          - os: macos-latest
+            target: macos
+          - os: windows-latest
+            target: windows
+          - os: ubuntu-latest
+            target: apk
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.4
+          channel: stable
+          cache: true
+      - name: Install Linux WebKitGTK
+        if: matrix.target == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev ${{ matrix.webkit }} ninja-build
+      - run: flutter config --enable-linux-desktop
+        if: matrix.target == 'linux'
+      - run: flutter config --enable-macos-desktop
+        if: matrix.target == 'macos'
+      - run: flutter config --enable-windows-desktop
+        if: matrix.target == 'windows'
+      - run: flutter pub get
+        working-directory: example
+      - run: flutter build ${{ matrix.target }}
+        working-directory: example
