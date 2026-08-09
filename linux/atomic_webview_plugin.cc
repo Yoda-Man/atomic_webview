@@ -50,7 +50,9 @@ static void webview_window_plugin_handle_method_call(
                                    nullptr);
       return false;
     }
-    for (const auto &[name, type] : required) {
+    for (const auto &argument : required) {
+      const char *name = argument.first;
+      const FlValueType type = argument.second;
       FlValue *value = fl_value_lookup_string(args, name);
       if (value == nullptr || fl_value_get_type(value) != type) {
         std::string message = "Missing or invalid argument: ";

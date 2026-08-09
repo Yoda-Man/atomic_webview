@@ -1,5 +1,5 @@
 ## 0.1.6
-* **Critical fix**: Restored the WebKitGTK 4.1 CMake target-order correction that regressed in 0.1.5.
+* **Critical fix**: Restored the WebKitGTK 4.1 CMake target-order correction that regressed in 0.1.5 and kept the Linux plugin compatible with Flutter's C++14 build settings.
 * **Fix**: Completed macOS method-channel results and corrected JavaScript handler removal.
 * **Fix**: Added URI policy validation, observable navigation errors, awaited initialization, lifecycle disposal, and reliable desktop asset extraction.
 * **Fix**: Added deterministic unsupported-method errors for Windows-only desktop capabilities.
