@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "atomic_webview",
     platforms: [
-        .macOS("10.15")
+        .macOS("12.0")
     ],
     products: [
         .library(name: "atomic-webview", targets: ["atomic_webview"])

@@ -10,9 +10,9 @@ Flutter build system in application artifacts.
 ## Microsoft WebView2 SDK
 
 - Package: `Microsoft.Web.WebView2`
-- Version: `1.0.4078.44`
+- Version: `1.0.4314.35`
 - Source: official Microsoft NuGet package
-- NuGet SHA-256: `dc4d1d9168df26b830398303e50210b6e1729f6ce5a7ac69d2c766852f489962`
+- NuGet SHA-256: `90778deb1b77e36292828b4b5833c9255c27533f40e0ddd55891ae718944edc4`
 - Loader architectures: x86, x64, ARM64
 - License and notice: `windows/webview2/`
 
@@ -20,9 +20,9 @@ Loader SHA-256 values:
 
 | Architecture | SHA-256 |
 |---|---|
-| x86 | `5388b73b5ca00f1faf2a569cd923fdff00e316a254ef6df9fba240e3839a2c45` |
-| x64 | `239a9d6614a6cfade62b47cdb0be36e3069eedc438c3e0647a9e7b7c84ef6ea0` |
-| ARM64 | `eef3eba85d4c28eebddf966f016b1b43df1ee584573210c5a6eb9483387467c4` |
+| x86 | `1d348d3c0a5cb0d985389b68a0fd9bf966c2aed65f5e44bbc0233739b7a57f9e` |
+| x64 | `d3fce90bdeecb08596e377dea6a316354dd8949e32ff09b89d51be00c14e21b6` |
+| ARM64 | `05429881d918fd64a3fe4955155c1af79e66d7b7d944034467874f420bc2265a` |
 
 Update all headers, loaders, license files, version references, and checksums from
 one NuGet archive in the same commit.

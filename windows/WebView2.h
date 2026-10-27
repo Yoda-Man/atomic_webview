@@ -882,6 +882,13 @@ typedef interface ICoreWebView2CookieList ICoreWebView2CookieList;
 #endif 	/* __ICoreWebView2CookieList_FWD_DEFINED__ */
 
 
+#ifndef __ICoreWebView2CrashReport_FWD_DEFINED__
+#define __ICoreWebView2CrashReport_FWD_DEFINED__
+typedef interface ICoreWebView2CrashReport ICoreWebView2CrashReport;
+
+#endif 	/* __ICoreWebView2CrashReport_FWD_DEFINED__ */
+
+
 #ifndef __ICoreWebView2CustomSchemeRegistration_FWD_DEFINED__
 #define __ICoreWebView2CustomSchemeRegistration_FWD_DEFINED__
 typedef interface ICoreWebView2CustomSchemeRegistration ICoreWebView2CustomSchemeRegistration;
@@ -1008,6 +1015,13 @@ typedef interface ICoreWebView2DragStartingEventArgs ICoreWebView2DragStartingEv
 #endif 	/* __ICoreWebView2DragStartingEventArgs_FWD_DEFINED__ */
 
 
+#ifndef __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_FWD_DEFINED__
+#define __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_FWD_DEFINED__
+typedef interface ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler;
+
+#endif 	/* __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_FWD_DEFINED__ */
+
+
 #ifndef __ICoreWebView2Environment_FWD_DEFINED__
 #define __ICoreWebView2Environment_FWD_DEFINED__
 typedef interface ICoreWebView2Environment ICoreWebView2Environment;
@@ -1027,13 +1041,6 @@ typedef interface ICoreWebView2NewBrowserVersionAvailableEventHandler ICoreWebVi
 typedef interface ICoreWebView2CreateCoreWebView2ControllerCompletedHandler ICoreWebView2CreateCoreWebView2ControllerCompletedHandler;
 
 #endif 	/* __ICoreWebView2CreateCoreWebView2ControllerCompletedHandler_FWD_DEFINED__ */
-
-
-#ifndef __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_FWD_DEFINED__
-#define __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_FWD_DEFINED__
-typedef interface ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler;
-
-#endif 	/* __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_FWD_DEFINED__ */
 
 
 #ifndef __ICoreWebView2Environment2_FWD_DEFINED__
@@ -1666,6 +1673,13 @@ typedef interface ICoreWebView2ProcessFailedEventArgs3 ICoreWebView2ProcessFaile
 #endif 	/* __ICoreWebView2ProcessFailedEventArgs3_FWD_DEFINED__ */
 
 
+#ifndef __ICoreWebView2ProcessFailedEventArgs4_FWD_DEFINED__
+#define __ICoreWebView2ProcessFailedEventArgs4_FWD_DEFINED__
+typedef interface ICoreWebView2ProcessFailedEventArgs4 ICoreWebView2ProcessFailedEventArgs4;
+
+#endif 	/* __ICoreWebView2ProcessFailedEventArgs4_FWD_DEFINED__ */
+
+
 #ifndef __ICoreWebView2ProcessInfo_FWD_DEFINED__
 #define __ICoreWebView2ProcessInfo_FWD_DEFINED__
 typedef interface ICoreWebView2ProcessInfo ICoreWebView2ProcessInfo;
@@ -2130,6 +2144,8 @@ extern "C"{
 
 /* library WebView2 */
 /* [version][uuid] */ 
+
+
 
 
 
@@ -42120,6 +42136,156 @@ EXTERN_C __declspec(selectany) const IID IID_ICoreWebView2CookieList = {0xf7f6f7
 #endif 	/* __ICoreWebView2CookieList_INTERFACE_DEFINED__ */
 
 
+#ifndef __ICoreWebView2CrashReport_INTERFACE_DEFINED__
+#define __ICoreWebView2CrashReport_INTERFACE_DEFINED__
+
+/* interface ICoreWebView2CrashReport */
+/* [unique][object][uuid] */ 
+
+
+EXTERN_C __declspec(selectany) const IID IID_ICoreWebView2CrashReport = {0x74128fe8,0x5080,0x5f46,{0x94,0x1d,0xfb,0x74,0x7b,0x0b,0xcd,0x62}};
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("74128fe8-5080-5f46-941d-fb747b0bcd62")
+    ICoreWebView2CrashReport : public IUnknown
+    {
+    public:
+        virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_BucketId( 
+            /* [retval][out] */ LPWSTR *value) = 0;
+        
+        virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_CrashReportId( 
+            /* [retval][out] */ LPWSTR *value) = 0;
+        
+        virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_ExceptionCode( 
+            /* [retval][out] */ UINT32 *value) = 0;
+        
+        virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_FaultOffset( 
+            /* [retval][out] */ UINT64 *value) = 0;
+        
+        virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_FaultingModuleName( 
+            /* [retval][out] */ LPWSTR *value) = 0;
+        
+        virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_FaultingModuleVersion( 
+            /* [retval][out] */ LPWSTR *value) = 0;
+        
+        virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_ReportTime( 
+            /* [retval][out] */ UINT64 *value) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct ICoreWebView2CrashReportVtbl
+    {
+        BEGIN_INTERFACE
+        
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            ICoreWebView2CrashReport * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            ICoreWebView2CrashReport * This);
+        
+        DECLSPEC_XFGVIRT(IUnknown, Release)
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            ICoreWebView2CrashReport * This);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2CrashReport, get_BucketId)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_BucketId )( 
+            ICoreWebView2CrashReport * This,
+            /* [retval][out] */ LPWSTR *value);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2CrashReport, get_CrashReportId)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_CrashReportId )( 
+            ICoreWebView2CrashReport * This,
+            /* [retval][out] */ LPWSTR *value);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2CrashReport, get_ExceptionCode)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_ExceptionCode )( 
+            ICoreWebView2CrashReport * This,
+            /* [retval][out] */ UINT32 *value);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2CrashReport, get_FaultOffset)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_FaultOffset )( 
+            ICoreWebView2CrashReport * This,
+            /* [retval][out] */ UINT64 *value);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2CrashReport, get_FaultingModuleName)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_FaultingModuleName )( 
+            ICoreWebView2CrashReport * This,
+            /* [retval][out] */ LPWSTR *value);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2CrashReport, get_FaultingModuleVersion)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_FaultingModuleVersion )( 
+            ICoreWebView2CrashReport * This,
+            /* [retval][out] */ LPWSTR *value);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2CrashReport, get_ReportTime)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_ReportTime )( 
+            ICoreWebView2CrashReport * This,
+            /* [retval][out] */ UINT64 *value);
+        
+        END_INTERFACE
+    } ICoreWebView2CrashReportVtbl;
+
+    interface ICoreWebView2CrashReport
+    {
+        CONST_VTBL struct ICoreWebView2CrashReportVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define ICoreWebView2CrashReport_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define ICoreWebView2CrashReport_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define ICoreWebView2CrashReport_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define ICoreWebView2CrashReport_get_BucketId(This,value)	\
+    ( (This)->lpVtbl -> get_BucketId(This,value) ) 
+
+#define ICoreWebView2CrashReport_get_CrashReportId(This,value)	\
+    ( (This)->lpVtbl -> get_CrashReportId(This,value) ) 
+
+#define ICoreWebView2CrashReport_get_ExceptionCode(This,value)	\
+    ( (This)->lpVtbl -> get_ExceptionCode(This,value) ) 
+
+#define ICoreWebView2CrashReport_get_FaultOffset(This,value)	\
+    ( (This)->lpVtbl -> get_FaultOffset(This,value) ) 
+
+#define ICoreWebView2CrashReport_get_FaultingModuleName(This,value)	\
+    ( (This)->lpVtbl -> get_FaultingModuleName(This,value) ) 
+
+#define ICoreWebView2CrashReport_get_FaultingModuleVersion(This,value)	\
+    ( (This)->lpVtbl -> get_FaultingModuleVersion(This,value) ) 
+
+#define ICoreWebView2CrashReport_get_ReportTime(This,value)	\
+    ( (This)->lpVtbl -> get_ReportTime(This,value) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __ICoreWebView2CrashReport_INTERFACE_DEFINED__ */
+
+
 #ifndef __ICoreWebView2CustomSchemeRegistration_INTERFACE_DEFINED__
 #define __ICoreWebView2CustomSchemeRegistration_INTERFACE_DEFINED__
 
@@ -44171,6 +44337,92 @@ EXTERN_C __declspec(selectany) const IID IID_ICoreWebView2DragStartingEventArgs 
 #endif 	/* __ICoreWebView2DragStartingEventArgs_INTERFACE_DEFINED__ */
 
 
+#ifndef __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_INTERFACE_DEFINED__
+#define __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_INTERFACE_DEFINED__
+
+/* interface ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler */
+/* [unique][object][uuid] */ 
+
+
+EXTERN_C __declspec(selectany) const IID IID_ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler = {0x4e8a3389,0xc9d8,0x4bd2,{0xb6,0xb5,0x12,0x4f,0xee,0x6c,0xc1,0x4d}};
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("4e8a3389-c9d8-4bd2-b6b5-124fee6cc14d")
+    ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Invoke( 
+            /* [in] */ HRESULT errorCode,
+            /* [in] */ ICoreWebView2Environment *result) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandlerVtbl
+    {
+        BEGIN_INTERFACE
+        
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler * This);
+        
+        DECLSPEC_XFGVIRT(IUnknown, Release)
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler * This);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, Invoke)
+        HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+            ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler * This,
+            /* [in] */ HRESULT errorCode,
+            /* [in] */ ICoreWebView2Environment *result);
+        
+        END_INTERFACE
+    } ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandlerVtbl;
+
+    interface ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler
+    {
+        CONST_VTBL struct ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandlerVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_Invoke(This,errorCode,result)	\
+    ( (This)->lpVtbl -> Invoke(This,errorCode,result) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_INTERFACE_DEFINED__ */
+
+
 #ifndef __ICoreWebView2Environment_INTERFACE_DEFINED__
 #define __ICoreWebView2Environment_INTERFACE_DEFINED__
 
@@ -44481,92 +44733,6 @@ EXTERN_C __declspec(selectany) const IID IID_ICoreWebView2CreateCoreWebView2Cont
 
 
 #endif 	/* __ICoreWebView2CreateCoreWebView2ControllerCompletedHandler_INTERFACE_DEFINED__ */
-
-
-#ifndef __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_INTERFACE_DEFINED__
-#define __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_INTERFACE_DEFINED__
-
-/* interface ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler */
-/* [unique][object][uuid] */ 
-
-
-EXTERN_C __declspec(selectany) const IID IID_ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler = {0x4e8a3389,0xc9d8,0x4bd2,{0xb6,0xb5,0x12,0x4f,0xee,0x6c,0xc1,0x4d}};
-
-#if defined(__cplusplus) && !defined(CINTERFACE)
-    
-    MIDL_INTERFACE("4e8a3389-c9d8-4bd2-b6b5-124fee6cc14d")
-    ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler : public IUnknown
-    {
-    public:
-        virtual HRESULT STDMETHODCALLTYPE Invoke( 
-            /* [in] */ HRESULT errorCode,
-            /* [in] */ ICoreWebView2Environment *result) = 0;
-        
-    };
-    
-    
-#else 	/* C style interface */
-
-    typedef struct ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandlerVtbl
-    {
-        BEGIN_INTERFACE
-        
-        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler * This,
-            /* [in] */ REFIID riid,
-            /* [annotation][iid_is][out] */ 
-            _COM_Outptr_  void **ppvObject);
-        
-        DECLSPEC_XFGVIRT(IUnknown, AddRef)
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler * This);
-        
-        DECLSPEC_XFGVIRT(IUnknown, Release)
-        ULONG ( STDMETHODCALLTYPE *Release )( 
-            ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler * This);
-        
-        DECLSPEC_XFGVIRT(ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, Invoke)
-        HRESULT ( STDMETHODCALLTYPE *Invoke )( 
-            ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler * This,
-            /* [in] */ HRESULT errorCode,
-            /* [in] */ ICoreWebView2Environment *result);
-        
-        END_INTERFACE
-    } ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandlerVtbl;
-
-    interface ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler
-    {
-        CONST_VTBL struct ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandlerVtbl *lpVtbl;
-    };
-
-    
-
-#ifdef COBJMACROS
-
-
-#define ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_Invoke(This,errorCode,result)	\
-    ( (This)->lpVtbl -> Invoke(This,errorCode,result) ) 
-
-#endif /* COBJMACROS */
-
-
-#endif 	/* C style interface */
-
-
-
-
-#endif 	/* __ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler_INTERFACE_DEFINED__ */
 
 
 #ifndef __ICoreWebView2Environment2_INTERFACE_DEFINED__
@@ -59009,6 +59175,141 @@ EXTERN_C __declspec(selectany) const IID IID_ICoreWebView2ProcessFailedEventArgs
 
 
 #endif 	/* __ICoreWebView2ProcessFailedEventArgs3_INTERFACE_DEFINED__ */
+
+
+#ifndef __ICoreWebView2ProcessFailedEventArgs4_INTERFACE_DEFINED__
+#define __ICoreWebView2ProcessFailedEventArgs4_INTERFACE_DEFINED__
+
+/* interface ICoreWebView2ProcessFailedEventArgs4 */
+/* [unique][object][uuid] */ 
+
+
+EXTERN_C __declspec(selectany) const IID IID_ICoreWebView2ProcessFailedEventArgs4 = {0xe00e3c7f,0xd6d3,0x5e64,{0xb7,0xab,0x58,0x1b,0x63,0x16,0xb2,0x27}};
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("e00e3c7f-d6d3-5e64-b7ab-581b6316b227")
+    ICoreWebView2ProcessFailedEventArgs4 : public ICoreWebView2ProcessFailedEventArgs3
+    {
+    public:
+        virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_CrashReport( 
+            /* [retval][out] */ ICoreWebView2CrashReport **value) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct ICoreWebView2ProcessFailedEventArgs4Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            ICoreWebView2ProcessFailedEventArgs4 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            ICoreWebView2ProcessFailedEventArgs4 * This);
+        
+        DECLSPEC_XFGVIRT(IUnknown, Release)
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            ICoreWebView2ProcessFailedEventArgs4 * This);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2ProcessFailedEventArgs, get_ProcessFailedKind)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_ProcessFailedKind )( 
+            ICoreWebView2ProcessFailedEventArgs4 * This,
+            /* [retval][out] */ COREWEBVIEW2_PROCESS_FAILED_KIND *value);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2ProcessFailedEventArgs2, get_Reason)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_Reason )( 
+            ICoreWebView2ProcessFailedEventArgs4 * This,
+            /* [retval][out] */ COREWEBVIEW2_PROCESS_FAILED_REASON *reason);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2ProcessFailedEventArgs2, get_ExitCode)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_ExitCode )( 
+            ICoreWebView2ProcessFailedEventArgs4 * This,
+            /* [retval][out] */ int *exitCode);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2ProcessFailedEventArgs2, get_ProcessDescription)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_ProcessDescription )( 
+            ICoreWebView2ProcessFailedEventArgs4 * This,
+            /* [retval][out] */ LPWSTR *processDescription);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2ProcessFailedEventArgs2, get_FrameInfosForFailedProcess)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_FrameInfosForFailedProcess )( 
+            ICoreWebView2ProcessFailedEventArgs4 * This,
+            /* [retval][out] */ ICoreWebView2FrameInfoCollection **frames);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2ProcessFailedEventArgs3, get_FailureSourceModulePath)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_FailureSourceModulePath )( 
+            ICoreWebView2ProcessFailedEventArgs4 * This,
+            /* [retval][out] */ LPWSTR *value);
+        
+        DECLSPEC_XFGVIRT(ICoreWebView2ProcessFailedEventArgs4, get_CrashReport)
+        /* [propget] */ HRESULT ( STDMETHODCALLTYPE *get_CrashReport )( 
+            ICoreWebView2ProcessFailedEventArgs4 * This,
+            /* [retval][out] */ ICoreWebView2CrashReport **value);
+        
+        END_INTERFACE
+    } ICoreWebView2ProcessFailedEventArgs4Vtbl;
+
+    interface ICoreWebView2ProcessFailedEventArgs4
+    {
+        CONST_VTBL struct ICoreWebView2ProcessFailedEventArgs4Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define ICoreWebView2ProcessFailedEventArgs4_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define ICoreWebView2ProcessFailedEventArgs4_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define ICoreWebView2ProcessFailedEventArgs4_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define ICoreWebView2ProcessFailedEventArgs4_get_ProcessFailedKind(This,value)	\
+    ( (This)->lpVtbl -> get_ProcessFailedKind(This,value) ) 
+
+
+#define ICoreWebView2ProcessFailedEventArgs4_get_Reason(This,reason)	\
+    ( (This)->lpVtbl -> get_Reason(This,reason) ) 
+
+#define ICoreWebView2ProcessFailedEventArgs4_get_ExitCode(This,exitCode)	\
+    ( (This)->lpVtbl -> get_ExitCode(This,exitCode) ) 
+
+#define ICoreWebView2ProcessFailedEventArgs4_get_ProcessDescription(This,processDescription)	\
+    ( (This)->lpVtbl -> get_ProcessDescription(This,processDescription) ) 
+
+#define ICoreWebView2ProcessFailedEventArgs4_get_FrameInfosForFailedProcess(This,frames)	\
+    ( (This)->lpVtbl -> get_FrameInfosForFailedProcess(This,frames) ) 
+
+
+#define ICoreWebView2ProcessFailedEventArgs4_get_FailureSourceModulePath(This,value)	\
+    ( (This)->lpVtbl -> get_FailureSourceModulePath(This,value) ) 
+
+
+#define ICoreWebView2ProcessFailedEventArgs4_get_CrashReport(This,value)	\
+    ( (This)->lpVtbl -> get_CrashReport(This,value) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __ICoreWebView2ProcessFailedEventArgs4_INTERFACE_DEFINED__ */
 
 
 #ifndef __ICoreWebView2ProcessInfo_INTERFACE_DEFINED__

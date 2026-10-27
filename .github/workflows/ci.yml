@@ -12,10 +12,10 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.44.4
+          flutter-version: 3.47.8
           channel: stable
           cache: true
       - run: flutter pub get
@@ -52,10 +52,10 @@ jobs:
             target: apk
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.44.4
+          flutter-version: 3.47.8
           channel: stable
           cache: true
       - name: Install Linux WebKitGTK

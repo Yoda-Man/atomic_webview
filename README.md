@@ -1,40 +1,57 @@
-# Atomic Webview
+<p align="center">
+  <img src="doc/assets/atomic-webview-logo.png" width="190" alt="Atomic Webview logo">
+</p>
 
-Atomic Webview provides one Flutter controller for Android, iOS, Linux, macOS,
-Web, and Windows. Mobile and Web use the maintained `webview_flutter`
-implementations. Desktop opens a separate native WebView window.
+<h1 align="center">Atomic Webview</h1>
+
+<p align="center">
+  <strong>One controller. Six platforms. Native where it matters.</strong><br>
+  A unified Flutter WebView for Android, iOS, Web, Linux, macOS, and Windows.
+</p>
+
+<p align="center">
+  <a href="https://pub.dev/packages/atomic_webview"><img src="https://img.shields.io/pub/v/atomic_webview.svg?logo=dart&logoColor=white" alt="pub.dev version"></a>
+  <a href="https://github.com/Yoda-Man/atomic_webview/actions/workflows/ci.yml"><img src="https://github.com/Yoda-Man/atomic_webview/actions/workflows/ci.yml/badge.svg?branch=dev" alt="CI status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-7c3aed.svg" alt="MIT license"></a>
+  <img src="https://img.shields.io/badge/Flutter-3.47.8%2B-02569B?logo=flutter&logoColor=white" alt="Flutter 3.47.8 or newer">
+</p>
+
+---
+
+Atomic Webview gives Flutter apps a consistent navigation and lifecycle API
+without pretending every platform works the same way. Android, iOS, and Web use
+the maintained `webview_flutter` implementations. Linux, macOS, and Windows use
+native desktop WebViews in a separate window.
+
+## Highlights
+
+- **One controller** for navigation, JavaScript, assets, errors, and lifecycle.
+- **Six supported platforms** with explicit capability differences.
+- **Native desktop engines**: WebKitGTK, WKWebView, and Microsoft WebView2.
+- **Safe defaults**: HTTP/HTTPS scheme validation and surfaced async failures.
+- **Local content support** for bundled, standalone HTML files.
+- **Optional desktop title bar** built with Flutter.
+- **Release-grade checks** across Web, Android, Linux, macOS, and Windows.
 
 ## Platform support
 
 | Capability | Android | iOS | Web | Linux | macOS | Windows |
-|---|---:|---:|---:|---:|---:|---:|
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
 | HTTP/HTTPS navigation | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Back, forward, reload, stop | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| JavaScript evaluation | ✅ | ✅ | Limited by browser | ✅ | ✅ | ✅ |
-| Bundled HTML asset | ✅ | ✅ | Not supported | ✅ | ✅ | ✅ |
-| Navigation/error callbacks | ✅ | ✅ | Platform-dependent | ✅ | ✅ | ✅ |
-| Document-start scripts | Platform API | Platform API | ❌ | ✅ | ✅ | ✅ |
-| JavaScript message handlers | Platform API | Platform API | Platform API | ❌ | ✅ | ❌ |
-| Web message post/receive | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| DevTools window | ❌ | ❌ | Browser-owned | ❌ | ❌ | ✅ |
+| JavaScript evaluation | ✅ | ✅ | Browser-limited | ✅ | ✅ | ✅ |
+| Bundled HTML asset | ✅ | ✅ | — | ✅ | ✅ | ✅ |
+| Navigation and error callbacks | ✅ | ✅ | Platform-dependent | ✅ | ✅ | ✅ |
+| Document-start scripts | Platform API | Platform API | — | ✅ | ✅ | ✅ |
+| JavaScript message handlers | Platform API | Platform API | Platform API | — | ✅ | — |
+| Web message post/receive | — | — | — | — | — | ✅ |
+| DevTools window | — | — | Browser-owned | — | — | ✅ |
 
-Windows builds bundle the Microsoft WebView2 loader for x86, x64, and ARM64.
-The Evergreen WebView2 Runtime must be installed on the target device.
+> [!NOTE]
+> Desktop WebViews run in their own native window. The Flutter widget displays a
+> status placeholder while that window is open.
 
-## Requirements
-
-- Dart 3.12.2 or newer in the 3.x line.
-- Flutter 3.44.4 or newer.
-- Android API 19 or newer.
-- A current WebView2 Evergreen Runtime on Windows.
-- `libwebkit2gtk-4.1-dev` on current Ubuntu/Debian releases, or
-  `libwebkit2gtk-4.0-dev` on older supported distributions.
-
-```bash
-sudo apt install libwebkit2gtk-4.1-dev
-```
-
-## Installation
+## Install
 
 ```yaml
 dependencies:
@@ -44,6 +61,24 @@ dependencies:
 ```bash
 flutter pub get
 ```
+
+Requires Dart 3.13.7+ and Flutter 3.47.8+.
+
+### Desktop prerequisites
+
+| Platform | Requirement |
+|---|---|
+| Linux | `libwebkit2gtk-4.1-dev`, or `libwebkit2gtk-4.0-dev` on older distributions |
+| macOS | macOS 12.0+ |
+| Windows | Microsoft Edge WebView2 Evergreen Runtime |
+
+```bash
+# Ubuntu / Debian
+sudo apt install libwebkit2gtk-4.1-dev
+```
+
+Windows builds include the WebView2 loader for x86, x64, and ARM64. The
+Evergreen Runtime itself must be installed on the target device.
 
 ## Quick start
 
@@ -55,17 +90,17 @@ import 'package:flutter/material.dart';
 
 void main(List<String> args) {
   if (runWebViewTitleBarWidget(args)) return;
-  runApp(const MaterialApp(home: WebViewPage()));
+  runApp(const MaterialApp(home: BrowserPage()));
 }
 
-class WebViewPage extends StatefulWidget {
-  const WebViewPage({super.key});
+class BrowserPage extends StatefulWidget {
+  const BrowserPage({super.key});
 
   @override
-  State<WebViewPage> createState() => _WebViewPageState();
+  State<BrowserPage> createState() => _BrowserPageState();
 }
 
-class _WebViewPageState extends State<WebViewPage> {
+class _BrowserPageState extends State<BrowserPage> {
   late final WebViewController controller;
   String? error;
 
@@ -77,17 +112,19 @@ class _WebViewPageState extends State<WebViewPage> {
         if (mounted) setState(() => error = event.description);
       },
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      try {
-        await controller.init(
-          context: context,
-          setState: setState,
-          uri: Uri.parse('https://flutter.dev'),
-        );
-      } on Object catch (exception) {
-        if (mounted) setState(() => error = exception.toString());
-      }
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => initialize());
+  }
+
+  Future<void> initialize() async {
+    try {
+      await controller.init(
+        context: context,
+        setState: setState,
+        uri: Uri.parse('https://flutter.dev'),
+      );
+    } on Object catch (exception) {
+      if (mounted) setState(() => error = exception.toString());
+    }
   }
 
   @override
@@ -98,35 +135,29 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (error case final message?) {
-      return Scaffold(body: Center(child: SelectableText(message)));
-    }
-    return Scaffold(body: WebView(controller: controller));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Atomic Webview'),
+        actions: [
+          IconButton(
+            tooltip: 'Reload',
+            onPressed: controller.is_init ? controller.reload : null,
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
+      ),
+      body: error == null
+          ? WebView(controller: controller)
+          : Center(child: SelectableText(error!)),
+    );
   }
 }
 ```
 
-On Linux, macOS, and Windows the widget displays a status placeholder while the
-page runs in a separate native window.
+## Navigate and run JavaScript
 
-## Configuration and errors
-
-The controller accepts HTTP and HTTPS by default. Restrict it further, or add a
-scheme deliberately, through `allowedSchemes`:
-
-```dart
-final controller = WebViewController(
-  allowedSchemes: const {'https'},
-  onNavigation: (uri) => auditNavigation(uri),
-  onLoadError: (error) => reportFailure(error.description),
-);
-```
-
-Invalid schemes throw `ArgumentError`. Operations before `init` completes throw
-`StateError`. Missing native runtimes and native channel failures are surfaced
-through the returned `Future`; do not discard it. Call `dispose` when finished.
-
-## Navigation and assets
+Every asynchronous command reports native failures through its returned
+`Future`. Await commands unless you deliberately route failures elsewhere.
 
 ```dart
 await controller.go(uri: Uri.parse('https://dart.dev'));
@@ -134,32 +165,61 @@ await controller.goBack();
 await controller.goForward();
 await controller.reload();
 await controller.stop();
+
 final title = await controller.evaluateJavaScript('document.title');
 ```
 
-`loadAsset` loads a Flutter asset. On desktop it extracts the individual asset
-to an isolated temporary directory and removes it during `dispose`.
+Operations before `init` completes throw `StateError`.
+
+## Control navigation
+
+HTTP and HTTPS are allowed by default. Restrict schemes and observe navigation
+from the controller:
 
 ```dart
-await controller.loadAsset('assets/index.html');
+final controller = WebViewController(
+  allowedSchemes: const {'https'},
+  onNavigation: (uri) => auditNavigation(uri),
+  onLoadError: (event) => reportFailure(event.description),
+);
 ```
 
-Desktop extraction does not copy sibling assets referenced by relative paths.
-Bundle standalone HTML, embed its resources, or serve a multi-file site from a
-local HTTP server.
+Invalid initial or programmatic schemes throw `ArgumentError`. Treat callback
+URLs and page messages as untrusted input.
 
-## Advanced desktop API
+## Load bundled HTML
 
-The controller exposes `webview_desktop_controller` after successful desktop
-initialization. Check the support table before calling platform-specific APIs.
-Unsupported calls return a `PlatformException` with code `unsupported`.
+Declare the file in your application's `pubspec.yaml`, then load it after
+initialization:
+
+```yaml
+flutter:
+  assets:
+    - assets/help.html
+```
+
+```dart
+await controller.loadAsset('assets/help.html');
+```
+
+Desktop extraction copies one file. For HTML that references sibling CSS,
+images, or scripts, embed the resources or serve the directory from a local
+HTTP server.
+
+## Use desktop-only features
+
+The advanced controller is available after desktop initialization. Gate
+platform-specific calls explicitly:
 
 ```dart
 import 'dart:io' show Platform;
 
 if (controller.is_desktop && controller.is_init) {
   final desktop = controller.webview_desktop_controller;
-  await desktop.addScriptToExecuteOnDocumentCreated('window.atomic = true;');
+
+  await desktop.addScriptToExecuteOnDocumentCreated(
+    'window.atomicWebview = true;',
+  );
   desktop.setOnHistoryChangedCallback((canBack, canForward) {});
   await desktop.setApplicationNameForUserAgent('MyApp/1.0');
 
@@ -170,28 +230,35 @@ if (controller.is_desktop && controller.is_init) {
 }
 ```
 
-## Desktop title bar
+Unsupported desktop calls complete with a `PlatformException` whose code is
+`unsupported`.
 
-Desktop applications can opt into a Flutter-powered title bar above the WebView
-by setting `titleBarHeight` in `CreateConfiguration`. Handle the title-bar
-sub-engine in the application's `main()` with `runWebViewTitleBarWidget`.
-The default height is zero, so the WebView fills the native window unless the
-application explicitly enables this feature.
+## Add a Flutter desktop title bar
+
+Call `runWebViewTitleBarWidget(args)` before the main app starts, as shown in
+the quick start. Opt into title-bar space with `CreateConfiguration` when using
+the advanced desktop API:
+
+```dart
+final webview = await WebviewWindow.create(
+  configuration: const CreateConfiguration(titleBarHeight: 40),
+);
+```
+
+The default height is zero, so the native WebView fills the window.
 
 ## Security
 
-- Only load content you trust. JavaScript is enabled for application content.
+- Load only content your application trusts.
 - Keep the default scheme restriction unless another scheme is required.
-- Do not place credentials or bearer tokens in URLs.
-- Treat JavaScript messages as untrusted input and validate them in the host app.
-- Enabling Android cleartext traffic weakens transport security and is not a
-  package requirement. Prefer HTTPS.
+- Never place credentials or bearer tokens in URLs.
+- Validate JavaScript messages before acting on them.
+- Prefer HTTPS; Android cleartext traffic is not required by this package.
 
-See [SECURITY.md](SECURITY.md) for reporting and supported-version policy.
+See [SECURITY.md](SECURITY.md) for the supported-version and private-reporting
+policy.
 
-## Development and support
-
-The complete example is in [`example/`](example/). Before submitting a change:
+## Develop
 
 ```bash
 flutter pub get
@@ -202,13 +269,17 @@ dart run tool/check_coverage.dart coverage/lcov.info 30
 dart pub publish --dry-run
 ```
 
+The complete runnable app is in [`example/`](example/).
+
+## Project guides
+
 - [Architecture](doc/ARCHITECTURE.md)
 - [Support runbook](doc/SUPPORT.md)
-- [Release and rollback process](doc/RELEASE.md)
+- [Release and rollback](doc/RELEASE.md)
 - [Dependency inventory](doc/DEPENDENCIES.md)
 - [Contributing](CONTRIBUTING.md)
 
 ## License
 
-Atomic Webview is MIT licensed. Vendored third-party notices are listed in the
-[dependency inventory](doc/DEPENDENCIES.md).
+Atomic Webview is available under the [MIT License](LICENSE). Vendored
+third-party notices are documented in the [dependency inventory](doc/DEPENDENCIES.md).

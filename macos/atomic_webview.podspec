@@ -16,7 +16,7 @@ Creates and controls a native WKWebView window for Atomic Webview.
   s.source_files     = 'atomic_webview/Sources/atomic_webview/**/*.swift'
   s.dependency 'FlutterMacOS'
 
-  s.platform = :osx, '10.15'
+  s.platform = :osx, '12.0'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.swift_version = '5.0'
 end

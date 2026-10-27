@@ -1,3 +1,7 @@
+## Unreleased
+* **Dependencies**: Raised the toolchain baseline to Flutter 3.47.8 / Dart 3.13.7, refreshed all resolvable Dart packages, updated Microsoft WebView2 to 1.0.4314.35, and moved CI to `actions/checkout` v7.
+* **Docs**: Added a new package logo and redesigned the README around installation, platform capabilities, security, and desktop usage.
+
 ## 0.1.6
 * **Critical fix**: Restored the WebKitGTK 4.1 CMake target-order correction that regressed in 0.1.5 and kept the Linux plugin compatible with Flutter's C++14 build settings.
 * **Fix**: Completed macOS method-channel results and corrected JavaScript handler removal.
