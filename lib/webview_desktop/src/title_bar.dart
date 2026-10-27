@@ -41,7 +41,14 @@ bool runWebViewTitleBarWidget(
     },
     onError ??
         (e, s) {
-          debugPrint('WebViewTitleBar: unhandled expections: $e, $s');
+          FlutterError.reportError(
+            FlutterErrorDetails(
+              exception: e,
+              stack: s,
+              library: 'atomic_webview',
+              context: ErrorDescription('running the desktop title bar'),
+            ),
+          );
         },
   );
 

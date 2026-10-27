@@ -55,7 +55,7 @@ native desktop WebViews in a separate window.
 
 ```yaml
 dependencies:
-  atomic_webview: ^0.1.6
+  atomic_webview: ^0.2.0
 ```
 
 ```bash
@@ -251,6 +251,8 @@ The default height is zero, so the native WebView fills the window.
 
 - Load only content your application trusts.
 - Keep the default scheme restriction unless another scheme is required.
+- Restrict remote hosts in the consuming application; scheme checks are not a
+  domain allowlist.
 - Never place credentials or bearer tokens in URLs.
 - Validate JavaScript messages before acting on them.
 - Prefer HTTPS; Android cleartext traffic is not required by this package.
@@ -265,7 +267,7 @@ flutter pub get
 dart format --output=none --set-exit-if-changed .
 flutter analyze
 flutter test --coverage
-dart run tool/check_coverage.dart coverage/lcov.info 30
+dart run tool/check_coverage.dart coverage/lcov.info 40
 dart pub publish --dry-run
 ```
 

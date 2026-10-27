@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'atomic_webview'
-  s.version          = '0.1.6'
+  s.version          = '0.2.0'
   s.summary          = 'Native macOS support for the Atomic Webview Flutter plugin.'
   s.description      = <<-DESC
 Creates and controls a native WKWebView window for Atomic Webview.

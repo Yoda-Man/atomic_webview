@@ -70,26 +70,31 @@ class WebviewImpl extends Webview {
   }
 
   void onNavigationStarted() {
+    _ensureOpen();
     _isNaivgating.value = true;
   }
 
   void notifyUrlChanged(String url) {
+    _ensureOpen();
     for (final callback in _onUrlRequestCallbacks) {
       callback(url);
     }
   }
 
   void notifyWebMessageReceived(String message) {
+    _ensureOpen();
     for (final callback in _onWebMessageReceivedCallbacks) {
       callback(message);
     }
   }
 
   void onNavigationCompleted() {
+    _ensureOpen();
     _isNaivgating.value = false;
   }
 
   void onNavigationError(String description, int? code, String? url) {
+    _ensureOpen();
     _isNaivgating.value = false;
     _onNavigationError?.call(description, code, url);
   }
@@ -169,6 +174,7 @@ class WebviewImpl extends Webview {
     if (!Platform.isMacOS) {
       throw UnsupportedError('Brightness is only supported on macOS.');
     }
+    _ensureOpen();
     await channel.invokeMethod("setBrightness", {
       "viewId": viewId,
       "brightness": brightness?.index ?? -1,
@@ -180,7 +186,10 @@ class WebviewImpl extends Webview {
     if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
       return;
     }
-    assert(javaScript.trim().isNotEmpty);
+    _ensureOpen();
+    if (javaScript.trim().isEmpty) {
+      throw ArgumentError.value(javaScript, 'javaScript', 'Must not be empty.');
+    }
     await channel.invokeMethod("addScriptToExecuteOnDocumentCreated", {
       "viewId": viewId,
       "javaScript": javaScript,
@@ -192,6 +201,14 @@ class WebviewImpl extends Webview {
     if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
       return;
     }
+    _ensureOpen();
+    if (applicationName.trim().isEmpty) {
+      throw ArgumentError.value(
+        applicationName,
+        'applicationName',
+        'Must not be empty.',
+      );
+    }
     await channel.invokeMethod("setApplicationNameForUserAgent", {
       "viewId": viewId,
       "applicationName": applicationName,
@@ -200,26 +217,31 @@ class WebviewImpl extends Webview {
 
   @override
   Future<void> forward() {
+    _ensureOpen();
     return channel.invokeMethod("forward", {"viewId": viewId});
   }
 
   @override
   Future<void> back() {
+    _ensureOpen();
     return channel.invokeMethod("back", {"viewId": viewId});
   }
 
   @override
   Future<void> reload() {
+    _ensureOpen();
     return channel.invokeMethod("reload", {"viewId": viewId});
   }
 
   @override
   Future<void> stop() {
+    _ensureOpen();
     return channel.invokeMethod("stop", {"viewId": viewId});
   }
 
   @override
   Future<void> openDevToolsWindow() {
+    _ensureOpen();
     return channel.invokeMethod('openDevToolsWindow', {"viewId": viewId});
   }
 
@@ -265,6 +287,10 @@ class WebviewImpl extends Webview {
 
   @override
   Future<String?> evaluateJavaScript(String javaScript) async {
+    _ensureOpen();
+    if (javaScript.trim().isEmpty) {
+      throw ArgumentError.value(javaScript, 'javaScript', 'Must not be empty.');
+    }
     final dynamic result = await channel.invokeMethod("evaluateJavaScript", {
       "viewId": viewId,
       "javaScriptString": javaScript,
@@ -277,6 +303,7 @@ class WebviewImpl extends Webview {
 
   @override
   Future<void> postWebMessageAsString(String webMessage) async {
+    _ensureOpen();
     return channel.invokeMethod("postWebMessageAsString", {
       "viewId": viewId,
       "webMessage": webMessage,
@@ -285,6 +312,8 @@ class WebviewImpl extends Webview {
 
   @override
   Future<void> postWebMessageAsJson(String webMessage) async {
+    _ensureOpen();
+    json.decode(webMessage);
     return channel.invokeMethod("postWebMessageAsJson", {
       "viewId": viewId,
       "webMessage": webMessage,

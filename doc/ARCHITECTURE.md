@@ -20,6 +20,11 @@ to the primary engine.
    their `Future` with an exception.
 5. `dispose` closes a desktop window and removes extracted asset files.
 
+Native navigation delegates reject schemes other than `http`, `https`, and
+`file`. The public controller defaults to `http` and `https`; `file` is reserved
+for explicitly loaded desktop assets. Host filtering remains the consuming
+application's responsibility.
+
 ## Platform channel contract
 
 Command arguments are maps with a `viewId` integer unless the command creates or

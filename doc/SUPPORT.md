@@ -2,8 +2,13 @@
 
 ## Ownership and escalation
 
-The GitHub CODEOWNERS entry is the first-line engineering owner. Public defects
-go to the repository issue tracker. Security reports follow `SECURITY.md`.
+The GitHub CODEOWNERS entry is the first-line engineering owner. Repository and
+pub.dev administrators are the fallback escalation roles. Public defects go to
+the repository issue tracker. Security reports follow `SECURITY.md`.
+
+Before handover, assign at least two people to the CODEOWNERS paths and record
+the support rota and response targets in the receiving team's system. A source
+repository cannot create human ownership or an on-call schedule by itself.
 
 ## First-response checklist
 
@@ -30,6 +35,10 @@ go to the repository issue tracker. Security reports follow `SECURITY.md`.
 The package does not log full navigation URLs. Host applications own structured
 logging, redaction, correlation IDs, metrics, and alerting. Never attach cookies,
 authorization headers, or full tokenized URLs to public issues.
+
+Uncaught package and title-bar errors are reported through Flutter's standard
+`FlutterError` pipeline. Host applications must connect that pipeline and the
+`onLoadError` callback to their observability provider.
 
 ## Service indicators
 

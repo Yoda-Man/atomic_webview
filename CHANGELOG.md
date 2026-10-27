@@ -1,5 +1,8 @@
-## Unreleased
+## 0.2.0 - 2026-10-27
 * **Dependencies**: Raised the toolchain baseline to Flutter 3.47.8 / Dart 3.13.7, refreshed all resolvable Dart packages, updated Microsoft WebView2 to 1.0.4314.35, and moved CI to `actions/checkout` v7.
+* **Security**: Added scheduled OSV scans, automated dependency updates, and native navigation-scheme enforcement on Linux and Windows.
+* **Release**: Restricted publishing to matching version tags whose exact commit has passed CI, package validation, and vulnerability scanning.
+* **Test**: Added a real desktop WebView integration smoke test, fixed the macOS example's missing outbound-network entitlement, and expanded lifecycle, validation, and error-path coverage.
 * **Docs**: Added a new package logo and redesigned the README around installation, platform capabilities, security, and desktop usage.
 
 ## 0.1.6

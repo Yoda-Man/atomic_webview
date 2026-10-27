@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <cassert>
+#include <cwchar>
 #include <iostream>
 #include <utility>
 #include <thread>
@@ -10,6 +11,20 @@
 #include "strconv.h"
 
 namespace webview_window {
+
+namespace {
+
+bool HasAllowedScheme(const wchar_t* uri) {
+  if (uri == nullptr) {
+    return false;
+  }
+  const auto length = std::wcslen(uri);
+  return (length >= 7 && _wcsnicmp(uri, L"http://", 7) == 0) ||
+         (length >= 8 && _wcsnicmp(uri, L"https://", 8) == 0) ||
+         (length >= 5 && _wcsnicmp(uri, L"file:", 5) == 0);
+}
+
+}  // namespace
 
 static LRESULT CALLBACK WndProc(HWND const window,
                                 UINT const message,
@@ -138,13 +153,17 @@ void WebView::OnWebviewControllerCreated() {
   webview_->add_NavigationStarting(
       Callback<ICoreWebView2NavigationStartingEventHandler>(
           [this](ICoreWebView2 *sender, ICoreWebView2NavigationStartingEventArgs *args) {
+            wil::unique_cotaskmem_string uri;
+            args->get_Uri(&uri);
+            if (!HasAllowedScheme(uri.get())) {
+              args->put_Cancel(TRUE);
+              return S_OK;
+            }
             method_channel_->InvokeMethod(
                 "onNavigationStarted",
                 std::make_unique<flutter::EncodableValue>(flutter::EncodableMap{
                     {flutter::EncodableValue("id"), flutter::EncodableValue(web_view_id_)},
                 }));
-            wil::unique_cotaskmem_string uri;
-            args->get_Uri(&uri);
             method_channel_->InvokeMethod(
                 "onUrlRequested",
                 std::make_unique<flutter::EncodableValue>(flutter::EncodableMap{

@@ -7,6 +7,10 @@ Direct package versions and constraints are recorded in `pubspec.yaml` and
 checks. License notices from resolved Flutter packages are included by the
 Flutter build system in application artifacts.
 
+Dependabot checks Dart, Gradle, and GitHub Actions dependencies weekly. The OSV
+workflow scans pull requests, every push to `main`, weekly, and again before a
+tagged release is published.
+
 ## Microsoft WebView2 SDK
 
 - Package: `Microsoft.Web.WebView2`

@@ -20,3 +20,8 @@ Atomic Webview renders active web content. URLs, page scripts, navigation
 callbacks, and JavaScript messages are untrusted unless the host application
 establishes otherwise. The package does not provide authentication, content
 sanitization, certificate bypasses, or a remote-content allowlist.
+
+Native implementations reject navigation schemes other than `http`, `https`,
+and `file`, but scheme validation does not establish trust in a remote host.
+JavaScript remains enabled for rendered content. Applications handling secrets
+must enforce their own domain policy and validate every JavaScript message.

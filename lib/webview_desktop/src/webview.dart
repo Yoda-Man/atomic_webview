@@ -5,8 +5,10 @@ typedef JavaScriptMessageHandler = void Function(String name, dynamic body);
 
 typedef PromptHandler = String Function(String prompt, String defaultText);
 
-typedef OnHistoryChangedCallback =
-    void Function(bool canGoBack, bool canGoForward);
+typedef OnHistoryChangedCallback = void Function(
+  bool canGoBack,
+  bool canGoForward,
+);
 
 /// Callback when WebView start to load a URL.
 /// [url] is the URL string.
@@ -16,8 +18,11 @@ typedef OnUrlRequestCallback = void Function(String url);
 /// [message] constains the webmessage
 typedef OnWebMessageReceivedCallback = void Function(String message);
 
-typedef OnNavigationErrorCallback =
-    void Function(String description, int? code, String? url);
+typedef OnNavigationErrorCallback = void Function(
+  String description,
+  int? code,
+  String? url,
+);
 
 abstract class Webview {
   Future<void> get onClose;

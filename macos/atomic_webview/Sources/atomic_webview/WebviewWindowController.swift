@@ -85,12 +85,6 @@ class WebviewWindowController: NSWindowController {
     }
   }
 
-  deinit {
-    #if DEBUG
-      print("\(self) deinited")
-    #endif
-  }
-
 }
 
 extension WebviewWindowController: NSWindowDelegate {

@@ -12,3 +12,9 @@ flutter run -d macos
 
 Desktop targets open the WebView in a separate native window. Web and mobile
 targets render it in the Flutter widget tree.
+
+Run the native runtime smoke test on a configured desktop target:
+
+```bash
+flutter test integration_test/webview_smoke_test.dart -d macos
+```

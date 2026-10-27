@@ -19,6 +19,9 @@ void main() {
             if (methodCall.method == 'create') {
               return 42;
             }
+            if (methodCall.method == 'evaluateJavaScript') {
+              return <String, Object>{'ok': true};
+            }
             return null;
           });
     });
@@ -195,24 +198,36 @@ void main() {
       String? requestedUrl;
       String? message;
       String? navigationError;
+      bool? canGoBack;
 
       webview.addOnUrlRequestCallback((url) => requestedUrl = url);
       webview.addOnWebMessageReceivedCallback((value) => message = value);
+      webview.setOnHistoryChangedCallback((back, _) => canGoBack = back);
       webview.setOnNavigationErrorCallback((description, code, url) {
         navigationError = '$description:$code:$url';
       });
 
       webview.notifyUrlChanged('https://example.com/path');
       webview.notifyWebMessageReceived('hello');
+      webview.onHistoryChanged(true, false);
       webview.onNavigationStarted();
       expect(webview.isNavigating.value, isTrue);
+      webview.onNavigationCompleted();
+      expect(webview.isNavigating.value, isFalse);
+      webview.onNavigationStarted();
       webview.onNavigationError('failed', 12, 'https://example.com');
 
       expect(requestedUrl, 'https://example.com/path');
       expect(message, 'hello');
+      expect(canGoBack, isTrue);
       expect(navigationError, 'failed:12:https://example.com');
       expect(webview.isNavigating.value, isFalse);
+      expect(
+        webview.onRunJavaScriptTextInputPanelWithPrompt('prompt', 'default'),
+        'default',
+      );
 
+      await webview.launch('https://example.com');
       await webview.setApplicationNameForUserAgent('Atomic/1.0');
       await webview.addScriptToExecuteOnDocumentCreated(
         'window.atomic = true;',
@@ -220,18 +235,93 @@ void main() {
       await webview.openDevToolsWindow();
       await webview.postWebMessageAsString('hello');
       await webview.postWebMessageAsJson('{"ok":true}');
+      expect(await webview.evaluateJavaScript('window.atomic'), '{"ok":true}');
+      await webview.close();
 
       expect(
         log.map((call) => call.method),
         containsAll(<String>[
+          'launch',
           'setApplicationNameForUserAgent',
           'addScriptToExecuteOnDocumentCreated',
           'openDevToolsWindow',
           'postWebMessageAsString',
           'postWebMessageAsJson',
+          'close',
         ]),
       );
     });
+
+    test('WebviewImpl validates content before invoking native code', () async {
+      final webview = WebviewImpl(8, channel);
+
+      await expectLater(
+        webview.launch('javascript:alert(1)'),
+        throwsArgumentError,
+      );
+      await expectLater(
+        webview.addScriptToExecuteOnDocumentCreated('  '),
+        throwsArgumentError,
+      );
+      await expectLater(
+        webview.setApplicationNameForUserAgent(''),
+        throwsArgumentError,
+      );
+      await expectLater(webview.evaluateJavaScript('\n'), throwsArgumentError);
+      await expectLater(
+        webview.postWebMessageAsJson('{not-json}'),
+        throwsFormatException,
+      );
+
+      expect(log, isEmpty);
+    });
+
+    test(
+      'WebviewImpl removes callbacks and rejects work after close',
+      () async {
+        final webview = WebviewImpl(9, channel);
+        var urlEvents = 0;
+        var messageEvents = 0;
+        void onUrl(String _) => urlEvents++;
+        void onMessage(String _) => messageEvents++;
+
+        webview.addOnUrlRequestCallback(onUrl);
+        webview.addOnWebMessageReceivedCallback(onMessage);
+        webview.notifyUrlChanged('https://example.com');
+        webview.notifyWebMessageReceived('first');
+        webview.removeOnUrlRequestCallback(onUrl);
+        webview.removeOnWebMessageReceivedCallback(onMessage);
+        webview.notifyUrlChanged('https://example.com/ignored');
+        webview.notifyWebMessageReceived('ignored');
+
+        expect(urlEvents, 1);
+        expect(messageEvents, 1);
+
+        webview.onClosed();
+        webview.onClosed();
+        await webview.onClose;
+
+        expect(() => webview.back(), throwsStateError);
+        expect(() => webview.forward(), throwsStateError);
+        expect(() => webview.reload(), throwsStateError);
+        expect(() => webview.stop(), throwsStateError);
+        expect(() => webview.openDevToolsWindow(), throwsStateError);
+        expect(() => webview.onNavigationStarted(), throwsStateError);
+        expect(
+          () => webview.notifyUrlChanged('https://example.com'),
+          throwsStateError,
+        );
+      },
+    );
+
+    test(
+      'WebviewWindow utility methods complete through the channel',
+      () async {
+        expect(await WebviewWindow.isWebviewAvailable(), isTrue);
+        await WebviewWindow.clearAll();
+        expect(log.any((call) => call.method == 'clearAll'), isTrue);
+      },
+    );
 
     test('Platform detection logic', () {
       final controller = WebViewController();

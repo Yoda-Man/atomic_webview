@@ -227,6 +227,16 @@ gboolean WebviewWindow::DecidePolicy(WebKitPolicyDecision *decision, WebKitPolic
     auto *navigation_action = webkit_navigation_policy_decision_get_navigation_action(navigation_decision);
     auto *request = webkit_navigation_action_get_request(navigation_action);
     auto *uri = webkit_uri_request_get_uri(request);
+    auto *scheme = g_uri_parse_scheme(uri);
+    const auto allowed = scheme != nullptr &&
+        (g_ascii_strcasecmp(scheme, "http") == 0 ||
+         g_ascii_strcasecmp(scheme, "https") == 0 ||
+         g_ascii_strcasecmp(scheme, "file") == 0);
+    g_free(scheme);
+    if (!allowed) {
+      webkit_policy_decision_ignore(decision);
+      return true;
+    }
     auto *args = fl_value_new_map();
     fl_value_set(args, fl_value_new_string("id"), fl_value_new_int(window_id_));
     fl_value_set(args, fl_value_new_string("url"), fl_value_new_string(uri));
