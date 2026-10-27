@@ -4,6 +4,7 @@
 .flutter-plugins-dependencies
 .pub/
 build/
+coverage/
 
 # IDE settings
 .vscode/

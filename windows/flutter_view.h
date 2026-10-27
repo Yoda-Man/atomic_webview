@@ -24,8 +24,6 @@ class FlutterView {
 
   void ReloadSystemFonts();
 
-  void ForceRedraw();
-
  private:
 
   std::unique_ptr<flutter::FlutterViewController> flutter_controller_;

@@ -6,7 +6,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 
@@ -37,15 +37,30 @@ class WebviewWindow {
       try {
         return await _handleMethodCall(call);
       } catch (e, s) {
-        debugPrint("method: ${call.method} args: ${call.arguments}");
-        debugPrint('handleMethodCall error: $e $s');
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            exception: e,
+            stack: s,
+            library: 'atomic_webview',
+            context: ErrorDescription('handling native WebView event'),
+          ),
+        );
+        rethrow;
       }
     });
     _otherIsolateMessageHandler.setMessageHandler((call) async {
       try {
         return await _handleOtherIsolateMethodCall(call);
       } catch (e, s) {
-        debugPrint('_handleOtherIsolateMethodCall error: $e $s');
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            exception: e,
+            stack: s,
+            library: 'atomic_webview',
+            context: ErrorDescription('handling title-bar WebView event'),
+          ),
+        );
+        rethrow;
       }
     });
   }
@@ -158,6 +173,13 @@ class WebviewWindow {
           {'webViewId': viewId},
         );
         break;
+      case "onNavigationError":
+        webview.onNavigationError(
+          args['description'] as String,
+          args['code'] as int?,
+          args['url'] as String?,
+        );
+        break;
       default:
         return;
     }
@@ -180,15 +202,22 @@ class WebviewWindow {
       }
 
       if (await (webview2Dir.exists())) {
+        Object? lastError;
         for (var i = 0; i <= 4; i++) {
           try {
             await webview2Dir.delete(recursive: true);
             break;
           } catch (e) {
-            debugPrint("delete cache failed. retring.... $e");
+            lastError = e;
           }
           // wait to ensure all web window has been closed and file handle has been release.
           await Future.delayed(const Duration(seconds: 1));
+        }
+        if (await webview2Dir.exists()) {
+          throw FileSystemException(
+            'Failed to delete WebView2 data after five attempts: $lastError',
+            webview2Dir.path,
+          );
         }
       }
     }

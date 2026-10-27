@@ -41,9 +41,4 @@ void FlutterView::ReloadSystemFonts() {
   flutter_controller_->engine()->ReloadSystemFonts();
 }
 
-void FlutterView::ForceRedraw() {
-
 }
-
-}
-

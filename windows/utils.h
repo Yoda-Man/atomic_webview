@@ -25,10 +25,6 @@ const auto MONITOR_AREA = 0x0000;        // use monitor entire area
 //
 void ClipOrCenterRectToMonitor(LPRECT prc, UINT flags);
 
-void ClipOrCenterWindowToMonitor(HWND hwnd, UINT flags);
-
-bool SetWindowBackgroundTransparent(HWND hwnd);
-
 const wchar_t *RegisterWindowClass(LPCWSTR class_name, WNDPROC wnd_proc);
 
 void UnregisterWindowClass(LPCWSTR class_name);

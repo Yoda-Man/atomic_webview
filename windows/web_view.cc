@@ -84,20 +84,22 @@ void WebView::OnWebviewControllerCreated() {
     return;
   }
 
-  ICoreWebView2Settings *settings;
-  webview_->get_Settings(&settings);
+  ComPtr<ICoreWebView2Settings> settings;
+  webview_->get_Settings(settings.GetAddressOf());
   settings->put_IsScriptEnabled(true);
   settings->put_IsZoomControlEnabled(false);
   settings->put_AreDefaultContextMenusEnabled(false);
   settings->put_IsStatusBarEnabled(false);
   settings->put_IsWebMessageEnabled(true);
 
-  ICoreWebView2Settings2 *settings2;
-  auto hr = settings->QueryInterface(IID_PPV_ARGS(&settings2));
+  ComPtr<ICoreWebView2Settings2> settings2;
+  auto hr = settings->QueryInterface(IID_PPV_ARGS(settings2.GetAddressOf()));
   if (SUCCEEDED(hr)) {
-    LPWSTR user_agent[256];
-    settings2->get_UserAgent(user_agent);
-    default_user_agent_ = std::wstring(*user_agent);
+    wil::unique_cotaskmem_string user_agent;
+    settings2->get_UserAgent(&user_agent);
+    if (user_agent) {
+      default_user_agent_ = std::wstring(user_agent.get());
+    }
   }
 
   UpdateBounds();
@@ -106,9 +108,9 @@ void WebView::OnWebviewControllerCreated() {
   webview_->add_NewWindowRequested(
       Callback<ICoreWebView2NewWindowRequestedEventHandler>(
           [](ICoreWebView2 *sender, ICoreWebView2NewWindowRequestedEventArgs *args) {
-            LPWSTR url;
+            wil::unique_cotaskmem_string url;
             args->get_Uri(&url);
-            sender->Navigate(url);
+            sender->Navigate(url.get());
             args->put_Handled(true);
             return S_OK;
           }).Get(), nullptr);
@@ -141,13 +143,13 @@ void WebView::OnWebviewControllerCreated() {
                 std::make_unique<flutter::EncodableValue>(flutter::EncodableMap{
                     {flutter::EncodableValue("id"), flutter::EncodableValue(web_view_id_)},
                 }));
-            LPWSTR uri;
+            wil::unique_cotaskmem_string uri;
             args->get_Uri(&uri);
             method_channel_->InvokeMethod(
                 "onUrlRequested",
                 std::make_unique<flutter::EncodableValue>(flutter::EncodableMap{
                     {flutter::EncodableValue("id"), flutter::EncodableValue(web_view_id_)},
-                    {flutter::EncodableValue("url"), flutter::EncodableValue(wide_to_utf8(std::wstring(uri)))},
+                    {flutter::EncodableValue("url"), flutter::EncodableValue(wide_to_utf8(std::wstring(uri.get())))},
                 }));
             return S_OK;
           }
@@ -155,6 +157,30 @@ void WebView::OnWebviewControllerCreated() {
   webview_->add_NavigationCompleted(
       Callback<ICoreWebView2NavigationCompletedEventHandler>(
           [this](ICoreWebView2 *sender, ICoreWebView2NavigationCompletedEventArgs *args) {
+            BOOL succeeded = FALSE;
+            args->get_IsSuccess(&succeeded);
+            if (!succeeded) {
+              COREWEBVIEW2_WEB_ERROR_STATUS status;
+              args->get_WebErrorStatus(&status);
+              wil::unique_cotaskmem_string source;
+              sender->get_Source(&source);
+              method_channel_->InvokeMethod(
+                  "onNavigationError",
+                  std::make_unique<flutter::EncodableValue>(
+                      flutter::EncodableMap{
+                          {flutter::EncodableValue("id"),
+                           flutter::EncodableValue(web_view_id_)},
+                          {flutter::EncodableValue("description"),
+                           flutter::EncodableValue("WebView2 navigation failed")},
+                          {flutter::EncodableValue("code"),
+                           flutter::EncodableValue(static_cast<int>(status))},
+                          {flutter::EncodableValue("url"),
+                           flutter::EncodableValue(
+                               source ? wide_to_utf8(std::wstring(source.get()))
+                                      : std::string())},
+                      }));
+              return S_OK;
+            }
             auto method_args = flutter::EncodableMap{
                 {flutter::EncodableValue("id"), flutter::EncodableValue(web_view_id_)},
             };
@@ -214,10 +240,10 @@ void WebView::AddScriptToExecuteOnDocumentCreated(const std::wstring &javaScript
 
 void WebView::SetApplicationNameForUserAgent(const std::wstring &name) {
   if (webview_) {
-    ICoreWebView2Settings *settings;
-    webview_->get_Settings(&settings);
-    ICoreWebView2Settings2 *settings2;
-    auto hr = settings->QueryInterface(IID_PPV_ARGS(&settings2));
+    ComPtr<ICoreWebView2Settings> settings;
+    webview_->get_Settings(settings.GetAddressOf());
+    ComPtr<ICoreWebView2Settings2> settings2;
+    auto hr = settings->QueryInterface(IID_PPV_ARGS(settings2.GetAddressOf()));
     if (SUCCEEDED(hr)) {
       settings2->put_UserAgent((default_user_agent_ + name).c_str());
     }

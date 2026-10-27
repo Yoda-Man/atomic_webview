@@ -22,6 +22,8 @@ class WebviewImpl extends Webview {
 
   OnHistoryChangedCallback? _onHistoryChanged;
 
+  OnNavigationErrorCallback? _onNavigationError;
+
   final ValueNotifier<bool> _isNaivgating = ValueNotifier<bool>(false);
 
   final Set<OnUrlRequestCallback> _onUrlRequestCallbacks = {};
@@ -30,29 +32,40 @@ class WebviewImpl extends Webview {
 
   WebviewImpl(this.viewId, this.channel);
 
+  void _ensureOpen() {
+    if (_closed) {
+      throw StateError('WebView $viewId is already closed.');
+    }
+  }
+
   @override
   Future<void> get onClose => _closeCompleter.future;
 
   void onClosed() {
+    if (_closed) {
+      return;
+    }
     _closed = true;
     _closeCompleter.complete();
   }
 
   void onJavaScriptMessage(String name, dynamic body) {
-    assert(!_closed);
+    _ensureOpen();
     final handler = _javaScriptMessageHandlers[name];
     assert(handler != null, "handler $name is not registed.");
     handler?.call(name, body);
   }
 
   String onRunJavaScriptTextInputPanelWithPrompt(
-      String prompt, String defaultText) {
-    assert(!_closed);
+    String prompt,
+    String defaultText,
+  ) {
+    _ensureOpen();
     return _promptHandler?.call(prompt, defaultText) ?? defaultText;
   }
 
   void onHistoryChanged(bool canGoBack, bool canGoForward) {
-    assert(!_closed);
+    _ensureOpen();
     _onHistoryChanged?.call(canGoBack, canGoForward);
   }
 
@@ -76,79 +89,99 @@ class WebviewImpl extends Webview {
     _isNaivgating.value = false;
   }
 
+  void onNavigationError(String description, int? code, String? url) {
+    _isNaivgating.value = false;
+    _onNavigationError?.call(description, code, url);
+  }
+
   @override
   ValueListenable<bool> get isNavigating => _isNaivgating;
 
   @override
-  void registerJavaScriptMessageHandler(
-      String name, JavaScriptMessageHandler handler) {
+  Future<void> registerJavaScriptMessageHandler(
+    String name,
+    JavaScriptMessageHandler handler,
+  ) async {
     if (!Platform.isMacOS) {
-      return;
+      throw UnsupportedError(
+        'JavaScript message handlers are only supported on macOS.',
+      );
     }
-    assert(!_closed);
-    if (_closed) {
-      return;
+    _ensureOpen();
+    if (name.trim().isEmpty) {
+      throw ArgumentError.value(name, 'name', 'Must not be empty.');
     }
-    assert(name.isNotEmpty);
-    assert(!_javaScriptMessageHandlers.containsKey(name));
+    if (_javaScriptMessageHandlers.containsKey(name)) {
+      throw StateError('JavaScript handler "$name" is already registered.');
+    }
     _javaScriptMessageHandlers[name] = handler;
-    channel.invokeMethod("registerJavaScripInterface", {
+    await channel.invokeMethod("registerJavaScripInterface", {
       "viewId": viewId,
       "name": name,
     });
   }
 
   @override
-  void unregisterJavaScriptMessageHandler(String name) {
+  Future<void> unregisterJavaScriptMessageHandler(String name) async {
     if (!Platform.isMacOS) {
-      return;
+      throw UnsupportedError(
+        'JavaScript message handlers are only supported on macOS.',
+      );
     }
     if (_closed) {
-      return;
+      throw StateError('WebView $viewId is already closed.');
     }
-    channel.invokeMethod("unregisterJavaScripInterface", {
+    await channel.invokeMethod("unregisterJavaScripInterface", {
       "viewId": viewId,
       "name": name,
     });
+    _javaScriptMessageHandlers.remove(name);
   }
 
   @override
   void setPromptHandler(PromptHandler? handler) {
     if (!Platform.isMacOS) {
-      return;
+      throw UnsupportedError('Prompt handlers are only supported on macOS.');
     }
     _promptHandler = handler;
   }
 
   @override
-  void launch(String url) async {
-    await channel.invokeMethod("launch", {
-      "url": url,
-      "viewId": viewId,
-    });
+  Future<void> launch(String url) async {
+    _ensureOpen();
+    final uri = Uri.tryParse(url);
+    if (uri == null ||
+        !const {'http', 'https', 'file'}.contains(uri.scheme.toLowerCase())) {
+      throw ArgumentError.value(
+        url,
+        'url',
+        'Desktop WebViews only allow http, https, and file URLs.',
+      );
+    }
+    await channel.invokeMethod("launch", {"url": url, "viewId": viewId});
   }
 
   @override
-  void setBrightness(Brightness? brightness) {
+  Future<void> setBrightness(Brightness? brightness) async {
     /// -1 : system default
     /// 0 : dark
     /// 1 : light
     if (!Platform.isMacOS) {
-      return;
+      throw UnsupportedError('Brightness is only supported on macOS.');
     }
-    channel.invokeMethod("setBrightness", {
+    await channel.invokeMethod("setBrightness", {
       "viewId": viewId,
       "brightness": brightness?.index ?? -1,
     });
   }
 
   @override
-  void addScriptToExecuteOnDocumentCreated(String javaScript) {
+  Future<void> addScriptToExecuteOnDocumentCreated(String javaScript) async {
     if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
       return;
     }
     assert(javaScript.trim().isNotEmpty);
-    channel.invokeMethod("addScriptToExecuteOnDocumentCreated", {
+    await channel.invokeMethod("addScriptToExecuteOnDocumentCreated", {
       "viewId": viewId,
       "javaScript": javaScript,
     });
@@ -196,6 +229,11 @@ class WebviewImpl extends Webview {
   }
 
   @override
+  void setOnNavigationErrorCallback(OnNavigationErrorCallback? callback) {
+    _onNavigationError = callback;
+  }
+
+  @override
   void addOnUrlRequestCallback(OnUrlRequestCallback callback) {
     _onUrlRequestCallbacks.add(callback);
   }
@@ -212,16 +250,17 @@ class WebviewImpl extends Webview {
 
   @override
   void removeOnWebMessageReceivedCallback(
-      OnWebMessageReceivedCallback callback) {
+    OnWebMessageReceivedCallback callback,
+  ) {
     _onWebMessageReceivedCallbacks.remove(callback);
   }
 
   @override
-  void close() {
+  Future<void> close() async {
     if (_closed) {
       return;
     }
-    channel.invokeMethod("close", {"viewId": viewId});
+    await channel.invokeMethod("close", {"viewId": viewId});
   }
 
   @override

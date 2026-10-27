@@ -28,6 +28,7 @@
 .pub-cache/
 .pub/
 /build/
+/coverage/
 
 # Symbolication related
 app.*.symbols
@@ -67,6 +68,12 @@ app.*.map.json
 /linux/flutter/generated_plugin_registrant.cc
 /linux/flutter/generated_plugin_registrant.h
 /linux/flutter/generated_plugins.cmake
+
+# Generated plugin registration in examples and consumer apps
+**/flutter/generated_plugin_registrant.cc
+**/flutter/generated_plugin_registrant.h
+**/flutter/generated_plugins.cmake
+**/Flutter/GeneratedPluginRegistrant.swift
 
 # Symbol files
 *.pdb
